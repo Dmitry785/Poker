@@ -1,3 +1,4 @@
+using Server.Application.Services;
 using Server.Hubs;
 
 namespace Server
@@ -12,16 +13,18 @@ namespace Server
             {
                 options.AddPolicy("SignalRPolicy", (p) =>
                 {
-                    p.WithOrigins("http://localhost:5173")
-                        .AllowCredentials()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                    p.SetIsOriginAllowed(o => true)
+                     .AllowCredentials()
+                     .AllowAnyHeader()
+                     .AllowAnyMethod();
                 });
             });
 
             builder.Services.AddControllers();
 
             builder.Services.AddSignalR();
+
+            builder.Services.AddSingleton<RegisterService>();
 
             var app = builder.Build();
 

@@ -1,18 +1,42 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import useSignalR from './hooks/useSignalR.js';
+
+const defaultServerHost = 'http://10.0.0.159:5138';
 
 function App() {
   const [message, setMessage] = useState('');
-  const [messages, connection] = useSignalR('http://localhost:5138/chat');
+  const [nickname, setNickname] = useState('');
+  const [serverHost, setServerHost] = useState(defaultServerHost);
+  const [selectedServerHost, setSelectedServerHost] = useState(defaultServerHost);
+  const [messages, connection] = useSignalR(selectedServerHost);
 
   const onSend = ()=>{
     console.log(`Sending message ${message}`);
-    connection.invoke('Send', message, 'Anonimous');
+    setMessage('');
+    connection.invoke('Send', message);
   }
+  const onConnect = ()=>{
+    setSelectedServerHost(serverHost);
+  }
+  const onReg = ()=>{
+    const Url = new URL(selectedServerHost+"/reg");
+    const search = new URLSearchParams();
+    search.append("nickname", nickname);
+    Url.search = search.toString();
+    fetch(Url.toString());
+  }
+
   return (
     <div>
-      <input value={message} onInput={(e)=>setMessage(e.target.value)}></input>
+      <input value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}></input>
+      <button onClick = {onReg}>Register</button>
+      <input value={serverHost} onInput={(e)=>setServerHost((e.target as HTMLInputElement).value)}></input>
+      <button onClick = {onConnect}>Connect</button>
+      <input value={message} onInput={(e)=>setMessage((e.target as HTMLInputElement).value)}></input>
       <button onClick = {onSend}>Send</button>
+      {messages.map(m=>(<div>
+          {`${m.sender} >> ${m.message}`}
+        </div>))}
     </div>
   )
 }

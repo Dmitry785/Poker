@@ -12,7 +12,7 @@ export default function useSignalR(connectionUrl: string): [ChatMessage[], HubCo
 
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
-            .withUrl(connectionUrl)
+            .withUrl(connectionUrl+"/chat")
             .withAutomaticReconnect()
             .configureLogging(LogLevel.Information)
             .build();
@@ -31,6 +31,10 @@ export default function useSignalR(connectionUrl: string): [ChatMessage[], HubCo
                 console.log(`${message} >> ${sender}`);
                 setMessages(prev=>[...prev, {sender: sender, message: message}]);
             });
+            connection.on('Connected', (ip: string)=>{
+                console.log(`player ${ip} connected`);
+                setMessages(prev=>[...prev, {sender: "server", message: `${ip} connected`}]);
+            })
         })
         .catch(()=>console.log('unable to connect'))
         return ()=>{
