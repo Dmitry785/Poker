@@ -3,12 +3,18 @@ import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signal
 
 interface ChatMessage{
     message: string,
-    sender: string
+    sender: string,
+    id?: number
 }
 
 export default function useSignalR(connectionUrl: string): [ChatMessage[], HubConnection] {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [connection, setConnection] = useState<null | HubConnection>(null);
+
+    function AddMessage(message: ChatMessage){
+        message = {...message, id: messages.length}
+        setMessages(prev=>[...prev, message]);
+    }
 
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
@@ -29,16 +35,26 @@ export default function useSignalR(connectionUrl: string): [ChatMessage[], HubCo
         .then(()=>{
             connection.on('Receive', (sender: string, message: string)=>{
                 console.log(`${message} >> ${sender}`);
-                setMessages(prev=>[...prev, {sender: sender, message: message}]);
+                AddMessage({sender, message});
             });
             connection.on('Connected', (ip: string)=>{
                 console.log(`player ${ip} connected`);
-                setMessages(prev=>[...prev, {sender: "server", message: `${ip} connected`}]);
+                AddMessage({sender: "server", message: `${ip} connected`});
+            });
+            connection.invoke('LoadAllMessages');
+            connection.on('AllMessages', (messages: ChatMessage[])=>{
+                console.log(messages);
+                messages.forEach(m=>AddMessage(m));
+            });
+            connection.on("Warning", (reason: string)=>{
+                alert(reason);
             })
         })
         .catch(()=>console.log('unable to connect'))
         return ()=>{
             connection.off('Receive');
+            connection.off('LoadAllMessages');
+            connection.off('Connected');
             connection.stop();
         }
     }, [connection])

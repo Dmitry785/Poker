@@ -13,6 +13,7 @@ function App() {
   const onSend = ()=>{
     console.log(`Sending message ${message}`);
     setMessage('');
+    
     connection.invoke('Send', message);
   }
   const onConnect = ()=>{
@@ -32,9 +33,11 @@ function App() {
       <button onClick = {onReg}>Register</button>
       <input value={serverHost} onInput={(e)=>setServerHost((e.target as HTMLInputElement).value)}></input>
       <button onClick = {onConnect}>Connect</button>
-      <input value={message} onInput={(e)=>setMessage((e.target as HTMLInputElement).value)}></input>
-      <button onClick = {onSend}>Send</button>
-      {messages.map(m=>(<div>
+      <form onSubmit={(e)=>{e.preventDefault(); onSend();}}>
+        <input value={message} onInput={(e)=>setMessage((e.target as HTMLInputElement).value)}></input>
+        <button type='submit'>Send</button>
+      </form>
+      {messages.map(m=>(<div key={m.id}>
           {`${m.sender} >> ${m.message}`}
         </div>))}
     </div>
