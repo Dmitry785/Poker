@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import styles from "./styles.module.css";
 import { useNavigate } from "react-router";
-
-const defaultServerUrl = "10.0.0.159:5057";
+import { useServerContext } from "../../hooks/useServerContext.js";
 
 export default function ConnectionWindow()  {
     const connect = useNavigate();
-    const [serverUrl, setServerUrl] = useState(defaultServerUrl);
-
+    const {serverUrl, setServerUrl, storeServerUrl} = useServerContext();
     const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+        storeServerUrl(serverUrl);
         connect('/authentication');
     }
     return (<div className={styles.container}>
