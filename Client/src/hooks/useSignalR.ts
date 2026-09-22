@@ -6,7 +6,9 @@ interface ChatMessage{
     sender: string
 }
 
-export default function useSignalR(connectionUrl: string): [ChatMessage[], HubConnection] {
+export default function useSignalR(connectionUrl: string,
+    onCloseCallback: (err?: Error | undefined) => void
+): [ChatMessage[], HubConnection] {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [connection, setConnection] = useState<null | HubConnection>(null);
 
@@ -34,8 +36,9 @@ export default function useSignalR(connectionUrl: string): [ChatMessage[], HubCo
             connection.on('Connected', (ip: string)=>{
                 console.log(`player ${ip} connected`);
                 setMessages(prev=>[...prev, {sender: "server", message: `${ip} connected`}]);
-            })
-        })
+            });
+            connection.onclose(onCloseCallback);
+        }).catch(onCloseCallback);
         return ()=>{
             connection.off('Receive');
             connection.stop();
