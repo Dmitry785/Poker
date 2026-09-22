@@ -14,6 +14,7 @@ namespace Server.Hubs
         }
         public override async Task OnConnectedAsync()
         {
+            Console.WriteLine($"{Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "unknown"} connected");
             await Clients.Others.SendAsync("Connected", Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "Anonimous");
         }
     }
