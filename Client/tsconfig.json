@@ -40,5 +40,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "include": [
+    "src", 
+    "declarations.d.ts" // подставьте ваше имя файла, если он в корне
+  ]
 }

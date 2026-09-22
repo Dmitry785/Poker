@@ -36,7 +36,6 @@ export default function useSignalR(connectionUrl: string): [ChatMessage[], HubCo
                 setMessages(prev=>[...prev, {sender: "server", message: `${ip} connected`}]);
             })
         })
-        .catch(()=>console.log('unable to connect'))
         return ()=>{
             connection.off('Receive');
             connection.stop();

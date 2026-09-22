@@ -11,11 +11,10 @@ const ServerContext = createContext<ServerContextType | undefined>(undefined);
 const defaultServerUrl = "10.0.0.159:5057";
 
 export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-    const [serverUrl, setServerUrl] = useState(loca defaultServerUrl);
+    const [serverUrl, setServerUrl] = useState(localStorage.getItem("server_url") || defaultServerUrl);
     const storeServerUrl = (url: string) => {
         localStorage.setItem("server_url", url);
     }
-
     return (
         <ServerContext.Provider value={{serverUrl, setServerUrl, storeServerUrl}}>
             {children}
