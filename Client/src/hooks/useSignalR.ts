@@ -11,12 +11,13 @@ export default function useSignalR(connectionUrl: string,
 ): [ChatMessage[], HubConnection] {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [connection, setConnection] = useState<null | HubConnection>(null);
-
+    const hubUrl = new URL("chat", connectionUrl);
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
-            .withUrl(connectionUrl+"/chat")
+            .withUrl(hubUrl.href)
             .withAutomaticReconnect()
             .configureLogging(LogLevel.Information)
+            .withServerTimeout(500)
             .build();
         setConnection(hubConnection);
         return ()=>{
