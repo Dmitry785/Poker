@@ -17,5 +17,9 @@ namespace Server.Hubs
             Console.WriteLine($"{Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "unknown"} connected");
             await Clients.Others.SendAsync("Connected", Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "Anonimous");
         }
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            Console.WriteLine($"{Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "unknown"} disconnected");
+        }
     }
 }

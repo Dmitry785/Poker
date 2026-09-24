@@ -21,11 +21,14 @@ export default function AuthenticationWindow() {
     hubConnection.on('Connected', (ip: string)=>{
         console.log(`player ${ip} connected`);
     });
+    hubConnection.onclose(()=>{
+      navigate("/connect");
+    })
     return ()=>{
       hubConnection.off("Receive");
       hubConnection.off("Connected");
     }
-  }, [hubConnection, navigate])
+  }, [hubConnection])
   if(!hubConnection) return null;
   const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();

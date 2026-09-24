@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { useNavigate } from "react-router";
 import { useServerContext } from "../../hooks/useServerContext.js";
@@ -8,30 +8,43 @@ export default function ConnectionWindow()  {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const {serverUrl, setServerUrl, setHubConnection} = useServerContext();
+    const {serverUrl, setServerUrl, hubConnection, setHubConnection} = useServerContext();
+    useEffect(()=>{
+        if (!hubConnection || hubConnection.state !== "Connected")
+            return;
+        hubConnection.stop();
+    }, [])
     const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrorMessage('');
         setIsLoading(true);
-        const sleep = new Promise((resolver)=>setTimeout(resolver, 1000));
+        const sleep = new Promise((resolver)=>setTimeout(resolver, 5000));
         try{
             const hubURL = new URL("chat", serverUrl);
             const hubConnection = new HubConnectionBuilder()
                 .withUrl(hubURL.href)
                 .withAutomaticReconnect()
                 .configureLogging(LogLevel.Information)
-                .withServerTimeout(500)
+                .withServerTimeout(10000)
                 .build();
             setHubConnection(hubConnection);
-            await Promise.all([hubConnection.start(), sleep]);
+            await Promise.any([hubConnection.start(), sleep]);
+            if (hubConnection.state !== "Connected")
+                throw "Timeout exception";
             navigate("/authentication");
-        } catch(err: any){
-            alert(err)
-            setErrorMessage(err);
+        } catch(err){
+            if(err instanceof Error){
+                setErrorMessage(err.message);
+            }
+            else if (typeof err == "string"){
+                setErrorMessage(err);
+            }
+            else{
+                alert(err);
+            }
         } finally {
             setIsLoading(false);
         }
-        navigate('/authentication');
     }
     return (<div className={styles.container}>
         <form onSubmit={onSubmit} className={styles.connect_form}>
