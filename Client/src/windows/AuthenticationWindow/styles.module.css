@@ -1,5 +1,6 @@
 .container{
     display: flex;
+    position: relative;
     justify-content: center;
     padding: 100px 200px;
 }
@@ -28,4 +29,17 @@
 }
 .registration_form button{
     padding: 20px;
+}
+.isSpectatorContainer label{
+    font-size: 20px !important;
+}
+.isSpectatorContainer input{
+    transform: scale(1.5);
+}
+.error{
+    position: absolute;
+    top: 10px; 
+    padding: 20px 50px;
+    border-radius: 10px;
+    background: rgba(212, 98, 98, 0.577);
 }

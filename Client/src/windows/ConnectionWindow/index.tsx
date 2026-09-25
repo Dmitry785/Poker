@@ -14,7 +14,6 @@ export default function ConnectionWindow()  {
         if (!hubConnection || hubConnection.state !== "Connected")
             return;
         hubConnection.stop();
-        alert("stop");
     }, [])
     const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
