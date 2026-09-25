@@ -1,4 +1,9 @@
+body{
+    --body_margin: 0px;
+    margin: var(--body_margin);
+}
 .container{
+    position: relative;
     display: flex;
     justify-content: center;
     padding: 100px 200px;
@@ -28,4 +33,25 @@
 }
 .connect_form button{
     padding: 20px;
+}
+.loading{
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background: #00000080;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 2*var(--body_margin));
+    overflow: hidden;
+}
+.loading img{
+    width: 150px;
+    height: 150px;
+}
+.error{
+    position: absolute;
+    top: 10px; 
+    padding: 20px 50px;
+    border-radius: 10px;
+    background: rgba(212, 98, 98, 0.577);
 }

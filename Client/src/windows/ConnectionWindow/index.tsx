@@ -2,49 +2,32 @@ import React, { use, useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { useNavigate } from "react-router";
 import { useServerContext } from "../../hooks/useServerContext.js";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import loading_svg from "../../assets/loading.svg";
 
 export default function ConnectionWindow()  {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const {serverUrl, setServerUrl, hubConnection, setHubConnection} = useServerContext();
+    const {serverUrl, setServerUrl, storeServerUrl, hubConnection, setHubConnection} = useServerContext();
     useEffect(()=>{
         if (!hubConnection || hubConnection.state !== "Connected")
             return;
         hubConnection.stop();
+        alert("stop");
     }, [])
     const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+        storeServerUrl(serverUrl);
         setErrorMessage('');
         setIsLoading(true);
-        const sleep = new Promise((resolver)=>setTimeout(resolver, 5000));
-        try{
-            const hubURL = new URL("chat", serverUrl);
-            const hubConnection = new HubConnectionBuilder()
-                .withUrl(hubURL.href)
-                .withAutomaticReconnect()
-                .configureLogging(LogLevel.Information)
-                .withServerTimeout(10000)
-                .build();
-            setHubConnection(hubConnection);
-            await Promise.any([hubConnection.start(), sleep]);
-            if (hubConnection.state !== "Connected")
-                throw "Timeout exception";
-            navigate("/authentication");
-        } catch(err){
-            if(err instanceof Error){
-                setErrorMessage(err.message);
-            }
-            else if (typeof err == "string"){
-                setErrorMessage(err);
-            }
-            else{
-                alert(err);
-            }
-        } finally {
-            setIsLoading(false);
-        }
+        await TryConnect(serverUrl, 2000)
+            .then((hubConnection)=>{
+                setHubConnection(hubConnection);
+                navigate("/authentication");
+            }).catch((err: Error)=>{
+                setErrorMessage(err.message)
+            }).finally(()=>setIsLoading(false));
     }
     return (<div className={styles.container}>
         <form onSubmit={onSubmit} className={styles.connect_form}>
@@ -52,7 +35,21 @@ export default function ConnectionWindow()  {
             <input id="server_url" value={serverUrl} onInput={(e)=>setServerUrl((e.target as HTMLInputElement).value)}/>
             <button type="submit">Подключиться</button>
         </form>
-        {isLoading && <span>Loading...</span>}
-        {errorMessage != '' && <span>Error: {errorMessage}</span>}
+        {isLoading && <div className={styles.loading}><img src={loading_svg} alt="Loading..."></img></div>}
+        {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>)
+}
+
+async function TryConnect(url: string, timeout: number): Promise<HubConnection>{
+    const sleep = new Promise((resolver)=>setTimeout(resolver, timeout));
+    const hubURL = new URL("chat", url);
+    const hubConnection = new HubConnectionBuilder()
+        .withUrl(hubURL.href)
+        .withAutomaticReconnect([1000])
+        .configureLogging(LogLevel.Information)
+        .build();
+    await Promise.any([hubConnection.start(), sleep]);
+    if (hubConnection.state !== "Connected")
+        throw new Error("Timeout exception");
+    return hubConnection;
 }
