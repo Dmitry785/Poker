@@ -6,30 +6,15 @@ import axios from 'axios';
 
 
 export default function AuthenticationWindow() {
-  const [nickname, setNickname] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isJoinAsSpectator, setIsJoinAsSpectator] = useState(false);
-  const {serverUrl, hubConnection, selfIdRef} = useServerContext();
+  const {serverUrl, hubConnection, selfIdRef, nickname, setNickname} = useServerContext();
   const navigate = useNavigate();
   useEffect(()=>{
     if(!hubConnection || hubConnection.state !== "Connected"){
       navigate("/connect", {replace: true});
-      return;
     }
-    hubConnection.on('Receive', (sender: string, message: string)=>{
-        console.log(`${message} >> ${sender}`);
-    });
-    hubConnection.on('Connected', (ip: string)=>{
-        console.log(`player ${ip} connected`);
-    });
-    hubConnection.onclose(()=>{
-      navigate("/connect");
-    })
-    return ()=>{
-      hubConnection.off("Receive");
-      hubConnection.off("Connected");
-    }
-  }, [hubConnection, navigate])
+  }, [hubConnection, navigate]);
   if(!hubConnection) return null;
   const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();

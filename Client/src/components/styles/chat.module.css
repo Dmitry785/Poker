@@ -1,0 +1,52 @@
+.container{
+    padding: 20px;
+    position: relative;
+}
+.list{
+    padding: 10px 20px;
+    margin: 5px 20px;
+    display: flex;
+    flex-direction: column;
+    background-image: url("http://localhost:5173/chat_background.jpg");
+    height: 500px;
+    width: 500px;
+    overflow-y: auto;
+    gap: 20px;
+    align-items: flex-end;
+}
+.message{
+    word-wrap: break-word;
+    max-width: 70%;
+    background: lightblue;
+    box-sizing: border-box;
+    min-height: fit-content;
+    padding: 5px 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.message .sender{
+    align-self: flex-end;
+    font-size: 18px;
+    font-style: italic;
+}
+.message .text{
+    font-size: 20px;
+}
+.message.left{
+    align-self: flex-start;
+    background: white;
+}
+.panel{
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+.panel input,
+.panel button{
+    padding: 20px 50px;
+    font-size: 24px;
+}

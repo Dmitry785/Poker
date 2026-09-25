@@ -4,28 +4,34 @@ using Server.Application.ResultApi;
 namespace Server.Application.Services
 {
     public record UserRegisterData(string Nickname, bool IsSpectator);
+    public record NicknameConstraint(Predicate<string> Condition, string ErrorMessage);
     public class RegisterService
     {
-        private readonly Dictionary<Guid, UserRegisterData> _users = new Dictionary<Guid, UserRegisterData>();
-        public Dictionary<Guid, UserRegisterData> RegisteredUsers => _users;
-        public bool CanRegistrationOverride { private get; set; } = false;
+        public Dictionary<Guid, UserRegisterData> RegisteredUsers { get; } = new Dictionary<Guid, UserRegisterData>();
+        public bool CanRegistrationOverride { get; set; } = false;
+        public List<NicknameConstraint> NicknamePolicies { get; } = new List<NicknameConstraint>();
         public Result<Guid> Register(string nickname, bool isSpectator)
         {
             var id = Guid.NewGuid();
-            if (_users.Values.FirstOrDefault(x=>x.Nickname == nickname) != null)
+            foreach (var constraint in NicknamePolicies)
+            {
+                if(!constraint.Condition(nickname))
+                    return Result<Guid>.Fail(constraint.ErrorMessage);
+            }
+            if (RegisteredUsers.Values.FirstOrDefault(x=>x.Nickname == nickname) != null)
             {
                 if (!CanRegistrationOverride)
                     return Result<Guid>.Fail($"Nickname {nickname} already in use");
-                _users.Remove(_users.First(x => x.Value.Nickname == nickname).Key);
+                RegisteredUsers.Remove(RegisteredUsers.First(x => x.Value.Nickname == nickname).Key);
             }
-            _users.Add(id, new UserRegisterData(nickname, isSpectator));
+            RegisteredUsers.Add(id, new UserRegisterData(nickname, isSpectator));
             return Result<Guid>.Ok(id);
         }
         public Result<UserRegisterData> GetUserRegisterInfoById(Guid? id)
         {
             if (id == null)
                 return Result<UserRegisterData>.Fail("Id is null");
-            if(_users.TryGetValue((Guid)id, out var userInfo))
+            if(RegisteredUsers.TryGetValue((Guid)id, out var userInfo))
             {
                 return Result<UserRegisterData>.Ok(userInfo);
             }

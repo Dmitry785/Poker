@@ -1,10 +1,20 @@
 import React, { use, useEffect, useState } from "react";
 import styles from "./styles.module.css";
-import { useNavigate } from "react-router";
+import { useNavigate, type NavigateFunction } from "react-router";
 import { useServerContext } from "../../hooks/useServerContext.js";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import loading_svg from "../../assets/loading.svg";
+import type SendData from "../../requests/SendRequest.js";
 
+interface HubClientMethods {
+    Send: (data: SendData) => void;
+}
+
+const hubConnection = new HubConnectionBuilder()
+    .withUrl("...")
+    .build() as HubConnection & {
+        send<K extends keyof HubClientMethods>(methodName: K, ...args: Parameters<HubClientMethods[K]>): Promise<void>;
+    };
 export default function ConnectionWindow()  {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +30,7 @@ export default function ConnectionWindow()  {
         storeServerUrl(serverUrl);
         setErrorMessage('');
         setIsLoading(true);
-        await TryConnect(serverUrl, 2000)
+        await TryConnect(serverUrl, 2000, navigate)
             .then((hubConnection)=>{
                 setHubConnection(hubConnection);
                 navigate("/authentication");
@@ -39,14 +49,19 @@ export default function ConnectionWindow()  {
     </div>)
 }
 
-async function TryConnect(url: string, timeout: number): Promise<HubConnection>{
+async function TryConnect(url: string, timeout: number, navigate: NavigateFunction): Promise<HubConnection>{
     const sleep = new Promise((resolver)=>setTimeout(resolver, timeout));
     const hubURL = new URL("chat", url);
     const hubConnection = new HubConnectionBuilder()
         .withUrl(hubURL.href)
         .withAutomaticReconnect([1000])
         .configureLogging(LogLevel.Information)
-        .build();
+        .build() as HubConnection & {
+            send<T extends keyof HubClientMethods>(methodName: T, ...args: Parameters<HubClientMethods[T]>): Promise<void>
+        };
+    hubConnection.onclose(()=>{
+      navigate("/connect");
+    })
     await Promise.any([hubConnection.start(), sleep]);
     if (hubConnection.state !== "Connected")
         throw new Error("Timeout exception");

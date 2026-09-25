@@ -2,21 +2,35 @@ import { Layer, Stage } from "react-konva";
 import { useServerContext } from "../../hooks/useServerContext.js";
 import PokerTable from "../../components/PokerTable.js";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
+import type NewMessageEvent from "../../responses/NewMessageEvent.js";
+import axios from "axios";
 
 export default function GameWindow()  {
-    const {selfIdRef} = useServerContext();
+    const {selfIdRef, hubConnection, setMessages, serverUrl} = useServerContext();
     const navigate = useNavigate();
     useEffect(()=>{
-        if (!selfIdRef.current)
+        if (!selfIdRef.current || !hubConnection || hubConnection.state !== "Connected"){
             navigate("/authentication");
-    }, [selfIdRef.current])
+            return;
+        }
+        hubConnection.on('NewMessage', (message: NewMessageEvent)=>{
+            console.log(`${message.sender} >> ${message.message}`);
+            setMessages(prev => [...prev, {sender: message.sender, message: message.message}]);
+        });
+        hubConnection.on('Warning', (message)=>{alert(message)});
+        const chatUpdateUrl = new URL("/load/chat", serverUrl);
+        axios.get(chatUpdateUrl.href)
+        .then(x=>setMessages(x.data))
+        .catch(err=>alert(err.message));
+        
+        return ()=>{
+            hubConnection!.off("NewMessage");
+            hubConnection!.off("Warning");
+        }
+    }, [])
     return (<div>
         Game {selfIdRef.current}
-        <Stage width={window.innerWidth} height={window.innerHeight}>
-            <Layer>
-                <PokerTable></PokerTable>
-            </Layer>
-        </Stage>
+        <Outlet></Outlet>
     </div>)
 }

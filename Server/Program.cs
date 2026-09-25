@@ -24,11 +24,16 @@ namespace Server
             builder.Services.AddControllers();
             builder.Services.AddSignalR();
 
-            var gameService = new GameService().WithPlayerAvailable(6).WithStartMoney(1000);
-            var registerService = new RegisterService().WithPlayerRegistrationOverrideAvailability();
+            var gameService = new GameService()
+                .WithPlayerAvailable(6)
+                .WithStartMoney(1000);
+            var registerService = new RegisterService()
+                .WithPlayerRegistrationOverrideAvailability()
+                .WithPlayerNameConstraint(x=>!String.IsNullOrEmpty(x), "Никнейм не должен быть пустым");
 
             builder.Services.AddSingleton(registerService);
             builder.Services.AddSingleton(gameService);
+            builder.Services.AddSingleton<ChatService>();
 
             var app = builder.Build();
 
