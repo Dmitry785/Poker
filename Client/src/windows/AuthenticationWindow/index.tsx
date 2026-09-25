@@ -39,8 +39,11 @@ export default function AuthenticationWindow() {
       serverRegistrationEndpoint.searchParams.append("nickname", nickname);
       serverRegistrationEndpoint.searchParams.append("isSpectator", isJoinAsSpectator ? "1":"0");
       const response = await axios.get(serverRegistrationEndpoint.href);
+      if(!response.data)
+        throw new Error("Response has no data");
       alert(response.data);
       selfIdRef.current = response.data;
+      localStorage.setItem("selfId", response.data);
       navigate("/game");
     }
     catch(err){

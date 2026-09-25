@@ -20,7 +20,7 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
     const storeServerUrl = useCallback((url: string) => {
         localStorage.setItem("server_url", url);
     }, []);
-    const selfIdRef = useRef<string | undefined>(undefined);
+    const selfIdRef = useRef<string | undefined>(localStorage.getItem("selfId") || undefined);
     const context = useMemo(()=>({hubConnection, setHubConnection, 
         serverUrl, setServerUrl, storeServerUrl, selfIdRef}), [serverUrl, hubConnection]);
     return (
