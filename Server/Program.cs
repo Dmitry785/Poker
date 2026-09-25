@@ -1,4 +1,5 @@
 using Server.Application.Services;
+using Server.Application.Services.Extensions;
 using Server.Hubs;
 
 namespace Server
@@ -9,6 +10,7 @@ namespace Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            //Services conriguration
             builder.Services.AddCors((options) =>
             {
                 options.AddPolicy("SignalRPolicy", (p) =>
@@ -19,19 +21,19 @@ namespace Server
                      .AllowAnyMethod();
                 });
             });
-
             builder.Services.AddControllers();
-
             builder.Services.AddSignalR();
 
-            builder.Services.AddSingleton<RegisterService>();
+            var gameService = new GameService().WithPlayerAvailable(6).WithStartMoney(1000);
+            var registerService = new RegisterService().WithPlayerRegistrationOverrideAvailability();
+
+            builder.Services.AddSingleton(registerService);
+            builder.Services.AddSingleton(gameService);
 
             var app = builder.Build();
 
+            //Application configuration
             app.UseCors("SignalRPolicy");
-
-           /* app.UseDefaultFiles();
-            app.UseStaticFiles();*/
 
             app.MapControllers();
 

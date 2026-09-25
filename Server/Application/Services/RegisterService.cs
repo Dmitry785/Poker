@@ -1,24 +1,35 @@
-﻿namespace Server.Application.Services
+﻿using Microsoft.AspNetCore.Mvc;
+using Server.Application.ResultApi;
+
+namespace Server.Application.Services
 {
+    public record UserRegisterData(string Nickname, bool IsSpectator);
     public class RegisterService
     {
-        private readonly Dictionary<string, string> _users = new Dictionary<string, string>();
-        public void Register(string ip, string name)
+        private readonly Dictionary<Guid, UserRegisterData> _users = new Dictionary<Guid, UserRegisterData>();
+        public Dictionary<Guid, UserRegisterData> RegisteredUsers => _users;
+        public bool CanRegistrationOverride { private get; set; } = false;
+        public Result<Guid> Register(string nickname, bool isSpectator)
         {
-            if(_users.TryGetValue(ip, out _))
-                _users.Remove(ip);
-            _users.Add(ip, name);
-            Console.WriteLine($"{ip} registered as {name}");
-        }
-        public string? GetNameByIp(string? ip)
-        {
-            if (ip == null)
-                return null;
-            if(_users.TryGetValue(ip, out var name))
+            var id = Guid.NewGuid();
+            if (_users.Values.FirstOrDefault(x=>x.Nickname == nickname) != null)
             {
-                return name;
+                if (!CanRegistrationOverride)
+                    return Result<Guid>.Fail($"Nickname {nickname} already in use");
+                _users.Remove(_users.First(x => x.Value.Nickname == nickname).Key);
             }
-            return null;
+            _users.Add(id, new UserRegisterData(nickname, isSpectator));
+            return Result<Guid>.Ok(id);
+        }
+        public Result<UserRegisterData> GetUserRegisterInfoById(Guid? id)
+        {
+            if (id == null)
+                return Result<UserRegisterData>.Fail("Id is null");
+            if(_users.TryGetValue((Guid)id, out var userInfo))
+            {
+                return Result<UserRegisterData>.Ok(userInfo);
+            }
+            return Result<UserRegisterData>.Fail($"couldn't find nickname by id {id}");
         }
     }
 }

@@ -6,13 +6,15 @@ namespace Server.Controllers
     public class RegistrationController : Controller
     {
         [HttpGet("/reg")]
-        public IActionResult Register(string nickname, [FromServices]RegisterService regService)
+        public IActionResult Register(string nickname, bool isSpectator, [FromServices] RegisterService regService)
         {
-            string? ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
-            if (ip is null)
-                return BadRequest();
-            regService.Register(ip, nickname);
-            return Ok();
+            Console.WriteLine(nickname);
+            var result = regService.Register(nickname, isSpectator);
+            Console.WriteLine(nickname);
+            if (result.Success)
+                return Ok(result.Value);
+            Console.WriteLine(nickname);
+            return BadRequest(result.ErrorMessage);
         }
     }
 }
