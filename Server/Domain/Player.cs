@@ -2,11 +2,11 @@
 {
     public class Player
     {
-        public string Nickname { get; set; }
+        public User UserIdentify { get; set; }
         public decimal Balance {  get; set; }
-        public Player(string nickname, decimal balance)
+        public Player(User identify, decimal balance)
         {
-            Nickname = nickname;
+            UserIdentify = identify;
             Balance = balance;
         }
     }

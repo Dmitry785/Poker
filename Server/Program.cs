@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Server.Application.Services;
 using Server.Application.Services.Extensions;
 using Server.Hubs;
@@ -37,8 +38,15 @@ namespace Server
 
             var app = builder.Build();
 
+
             //Application configuration
             app.UseCors("SignalRPolicy");
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Static")),
+                RequestPath = "/static"
+            });
 
             app.MapControllers();
 

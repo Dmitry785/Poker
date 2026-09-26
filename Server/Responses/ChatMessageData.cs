@@ -1,4 +1,4 @@
 ﻿namespace Server.Responses
 {
-    public record ChatMessageData(string sender, string message);
+    public record ChatMessageData(string sender, string message, DateTime timestamp);
 }

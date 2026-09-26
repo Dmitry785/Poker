@@ -9,7 +9,7 @@ namespace Server.Controllers
         [HttpGet("/load/chat")]
         public IActionResult LoadChat([FromServices]ChatService chatService)
         {
-            return Ok(chatService.Messages.Select(x=>new ChatMessageData(x.Sender, x.Message)));
+            return Ok(chatService.Messages.Select(x=>new ChatMessageData(x.UserIdentify.Nickname, x.Text, x.Timestamp)));
         }
     }
 }

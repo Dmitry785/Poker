@@ -1,13 +1,16 @@
-﻿namespace Server.Application.Services
+﻿using Server.Domain;
+
+namespace Server.Application.Services
 {
     public record ChatMessage(string Sender, string Message);
     public class ChatService
     {
-        public List<ChatMessage> Messages { get; } = new List<ChatMessage>();
-        public void StoreMessage(string sender, string message)
+        public List<Message> Messages { get; } = new List<Message>();
+        public Message StoreTextMessage(User user, string text)
         {
-            Messages.Add(new ChatMessage(sender, message));
+            var message = new Message(user, text);
+            Messages.Add(message);
+            return message;
         }
-
     }
 }

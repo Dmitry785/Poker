@@ -14,7 +14,7 @@ namespace Server.Hubs
         {
             _chatService = chatService;
         }
-        public async Task Send(SendReuqest request, [FromServices]RegisterService regService)
+        public async Task Send(SendTextMessageReuqest request, [FromServices]RegisterService regService)
         {
             var result = regService.GetUserRegisterInfoById(request.Id);
             if (!result.Success)
@@ -22,9 +22,8 @@ namespace Server.Hubs
                 await Clients.Caller.SendAsync("Warning", "Неверный токен");
                 return;
             }
-            _chatService.StoreMessage(result.Value!.Nickname, request.Message);
-            Console.WriteLine(request.Message);
-            await Clients.All.SendAsync("NewMessage", new ChatMessageData(result.Value!.Nickname, request.Message));
+            var message = _chatService.StoreTextMessage(result.Value!, request.Message);
+            await Clients.All.SendAsync("NewMessage", new ChatMessageData(message.UserIdentify.Nickname, message.Text, message.Timestamp));
         }
         public override async Task OnConnectedAsync()
         {
