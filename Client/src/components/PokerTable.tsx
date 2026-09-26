@@ -1,7 +1,8 @@
-import React from "react"
-import { Circle, Group, Rect, Stage, Layer } from "react-konva"
+import React, { createRef } from "react"
+import { Group, Rect, Stage, Layer } from "react-konva"
 import Player from "./Player.js";
 import { Link } from "react-router";
+import styles from "./styles/poker.module.css";
 
 export default class PokerTable extends React.Component{
     constructor(args: any){
@@ -9,7 +10,7 @@ export default class PokerTable extends React.Component{
     }
     render(){
         return (
-            <div>
+            <div className={styles.container}>
                 <Link to="/game/chat">Чат</Link>
                 <Stage width={window.innerWidth} height={window.innerHeight}>
                     <Layer>

@@ -1,4 +1,5 @@
 export default interface NewMessageEvent{
     sender: string,
-    message: string
+    message: string,
+    timestamp: Date
 }

@@ -1,13 +1,12 @@
 .container{
     padding: 20px;
-    position: relative;
+    width: fit-content;
 }
 .list{
     padding: 10px 20px;
     margin: 5px 20px;
     display: flex;
     flex-direction: column;
-    background-image: url("http://localhost:5173/chat_background.jpg");
     height: 500px;
     width: 500px;
     overflow-y: auto;
@@ -35,18 +34,28 @@
 .message .text{
     font-size: 20px;
 }
+.message .timestamp{
+    color: blue;
+    align-self: flex-start;
+}
 .message.left{
     align-self: flex-start;
     background: white;
 }
 .panel{
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translate(-50%, 0);
+    margin-top: 0;
 }
 .panel input,
 .panel button{
     padding: 20px 50px;
     font-size: 24px;
+}
+.background_selector{
+    display: flex;
+    gap: 5px;
+}
+.background_selector button{
+    flex: 1 1 0;
+    height: 50px;
+    border-radius: 10px;
 }

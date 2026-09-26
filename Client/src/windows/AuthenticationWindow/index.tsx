@@ -26,7 +26,6 @@ export default function AuthenticationWindow() {
       const response = await axios.get(serverRegistrationEndpoint.href);
       if(!response.data)
         throw new Error("Response has no data");
-      alert(response.data);
       selfIdRef.current = response.data;
       localStorage.setItem("selfId", response.data);
       navigate("/game");

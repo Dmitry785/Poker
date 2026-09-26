@@ -15,8 +15,8 @@ export default function GameWindow()  {
             return;
         }
         hubConnection.on('NewMessage', (message: NewMessageEvent)=>{
-            console.log(`${message.sender} >> ${message.message}`);
-            setMessages(prev => [...prev, {sender: message.sender, message: message.message}]);
+            setMessages(prev => [...prev, {sender: message.sender, 
+                message: message.message, timestamp: message.timestamp}]);
         });
         hubConnection.on('Warning', (message)=>{alert(message)});
         const chatUpdateUrl = new URL("/load/chat", serverUrl);

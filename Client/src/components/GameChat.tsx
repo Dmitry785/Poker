@@ -1,10 +1,11 @@
 import styles from "./styles/chat.module.css";
-import ChatMessage, { type ChatMessageProps } from "./ChatMessage.js"
-import { useEffect, useState } from "react";
+import ChatMessage from "./ChatMessage.js"
+import { useState } from "react";
 import { useServerContext } from "../hooks/useServerContext.js";
 import { Link } from "react-router";
 
 export default function GameChat(){
+    const [backgroundUrl, setBackgroundUrl] = useState("1");
     const [draftMessage, setDraftMessage] = useState('');
     const {hubConnection, selfIdRef, messages} = useServerContext();
     const onSendMessage = (e: React.SubmitEvent<HTMLFormElement>)=>{
@@ -17,7 +18,12 @@ export default function GameChat(){
     }
     return (<div className={styles.container}>
         <Link to="/game">Вернуться к столу</Link>
-        <div className={styles.list}>
+        <div className={styles.background_selector}>
+            <button onClick={()=>setBackgroundUrl(`1`)}>Грибочки</button>
+            <button onClick={()=>setBackgroundUrl(`2`)}>Котики</button>
+            <button onClick={()=>setBackgroundUrl(`3`)}>Кирпич</button>
+        </div>
+        <div className={styles.list} style={{backgroundImage: `url(${new URL(`chat_background_${backgroundUrl}.jpg`, window.location.origin).href})`}}>
             {messages.map((message, index)=>(<ChatMessage key={index} {...message}></ChatMessage>))}
         </div>
         <form className={styles.panel} onSubmit={onSendMessage}>
