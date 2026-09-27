@@ -8,32 +8,6 @@ body{
     justify-content: center;
     padding: 100px 200px;
 }
-.connect_form{
-    flex: 1 1 0;
-    width: min-content;
-    font-size: 34px;
-    display: flex;
-    padding: 20px 120px;
-    background: orange;
-    gap: 50px;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    align-self: center;
-    justify-self: center;
-    max-width: 500px;
-}
-.connect_form label{
-    text-align: center;
-    white-space: nowrap;
-    padding: 10px;
-}
-.connect_form input{
-    padding: 20px;
-}
-.connect_form button{
-    padding: 20px;
-}
 .loading{
     position: absolute;
     top: 0; bottom: 0; left: 0; right: 0;

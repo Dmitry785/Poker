@@ -5,6 +5,7 @@ import { useServerContext } from "../../hooks/useServerContext.js";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import loading_svg from "../../assets/loading.svg";
 import type SendData from "../../requests/SendRequest.js";
+import Form from "../../components/Form.js";
 
 interface HubClientMethods {
     Send: (data: SendData) => void;
@@ -39,11 +40,11 @@ export default function ConnectionWindow()  {
             }).finally(()=>setIsLoading(false));
     }
     return (<div className={styles.container}>
-        <form onSubmit={onSubmit} className={styles.connect_form}>
-            <label htmlFor="server_url">Адрес сервера</label>
-            <input id="server_url" value={serverUrl} onInput={(e)=>setServerUrl((e.target as HTMLInputElement).value)}/>
-            <button type="submit">Подключиться</button>
-        </form>
+        <Form buttonText="Подключиться" 
+            header="Подключение"
+            onFormSubmit={onSubmit}>
+                
+            </Form>
         {isLoading && <div className={styles.loading}><img src={loading_svg} alt="Loading..."></img></div>}
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>)

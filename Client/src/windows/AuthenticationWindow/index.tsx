@@ -3,6 +3,7 @@ import { useServerContext } from '../../hooks/useServerContext.js';
 import styles from "./styles.module.css";
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import Form from '../../components/Form.js';
 
 
 export default function AuthenticationWindow() {
@@ -49,6 +50,20 @@ export default function AuthenticationWindow() {
             </p>
             <button type="submit">Вотйи в игру</button>
         </form>
+        <Form buttonText="Подключиться" 
+            header="Регистрация"
+            onFormSubmit={onSubmit} 
+            inputs={[{
+              label: "Имя", 
+              input: {
+                  setValue: (e)=>setNickname((e.target as HTMLInputElement).value), 
+                  value: nickname
+              }},{
+              label: "Войти как спектатор", 
+              input: {
+                  setValue: (e)=>setIsJoinAsSpectator((e.target as HTMLInputElement).checked), 
+                  value: isJoinAsSpectator
+              }}]}/>
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>)
 }
