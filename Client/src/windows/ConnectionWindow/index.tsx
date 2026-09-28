@@ -42,7 +42,15 @@ export default function ConnectionWindow()  {
     return (<div className={styles.container}>
         <Form buttonText="Подключиться" 
             header="Подключение"
+            className={styles.connection_form}
             onFormSubmit={onSubmit}>
+                <p>
+                    <label htmlFor="server_url">Адрес сервера</label>
+                    <input id="server_url" value={serverUrl} 
+                        onChange={(e)=>
+                            setServerUrl((e.target as HTMLInputElement).value)
+                        }></input>
+                </p>
                 
             </Form>
         {isLoading && <div className={styles.loading}><img src={loading_svg} alt="Loading..."></img></div>}

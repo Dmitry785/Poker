@@ -1,17 +1,39 @@
 body{
     --body_margin: 0px;
     margin: var(--body_margin);
+    background-image: url('/connection_background.jpg');
 }
 .container{
     position: relative;
     display: flex;
     justify-content: center;
-    padding: 100px 200px;
+    padding: 80px 50px;
+}
+.connection_form{
+    color: white !important;
+    isolation: isolate;
+    border-radius: 20px;
+    position: relative !important;
+    overflow: hidden;
+}
+.connection_form::before{
+    position: absolute;
+    content: '';
+    top: -10px;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    background-image: url('/connection_form_background.jpg') !important;
+    background-position: center !important;
+    background-size: cover !important;
+    filter: blur(5px) brightness(0.3);
+    z-index: -1;
 }
 .loading{
     position: absolute;
     top: 0; bottom: 0; left: 0; right: 0;
     background: #00000080;
+    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,6 +47,7 @@ body{
 .error{
     position: absolute;
     top: 10px; 
+    font-size: 30px;
     padding: 20px 50px;
     border-radius: 10px;
     background: rgba(212, 98, 98, 0.577);
