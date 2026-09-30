@@ -20,28 +20,23 @@
 }
 .container .header{
     margin: 50px 5px;
-    font-size: 40px;
+    font-size: 36px;
     text-align: center;
 }
 .form label{
-    font-size: 40px;
+    font-size: 32px;
     text-align: left;
     white-space: nowrap;
     padding: 10px;
 }
 .form input{
-    font-size: 32px;
+    font-size: 28px;
     padding: 20px;
     border-radius: 20px;
 }
-.form p{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
 .form button{
     margin-top: auto;
-    font-size: 32px;
+    font-size: 28px;
     border-radius: 20px;
     background: darkgoldenrod;
     padding: 20px;

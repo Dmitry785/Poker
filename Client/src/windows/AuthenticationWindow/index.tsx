@@ -41,29 +41,19 @@ export default function AuthenticationWindow() {
   }
   return (
     <div className={styles.container}>
-        <form onSubmit={onSubmit} className={styles.registration_form}>
-            <label htmlFor="nickname">Имя</label>
-            <input id="nickname" value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}/>
-            <p className={styles.isSpectatorContainer}>
-              <input id="isSpectator" type="checkbox" checked={isJoinAsSpectator} onChange={()=>setIsJoinAsSpectator(!isJoinAsSpectator)}></input>
-              <label htmlFor='isSpectator'>Подключиться как спектатор</label>
-            </p>
-            <button type="submit">Вотйи в игру</button>
-        </form>
-        <Form buttonText="Подключиться" 
-            header="Регистрация"
-            onFormSubmit={onSubmit} 
-            inputs={[{
-              label: "Имя", 
-              input: {
-                  setValue: (e)=>setNickname((e.target as HTMLInputElement).value), 
-                  value: nickname
-              }},{
-              label: "Войти как спектатор", 
-              input: {
-                  setValue: (e)=>setIsJoinAsSpectator((e.target as HTMLInputElement).checked), 
-                  value: isJoinAsSpectator
-              }}]}/>
+        <Form buttonText="Войти" 
+            header="Аутентификация"
+            className={styles.registration_form}
+            onFormSubmit={onSubmit}>
+                <p>
+                    <label htmlFor="nickname">Имя</label>
+                    <input id="nickname" value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}/>
+                </p>
+                <p className={styles.isSpectatorContainer}>
+                  <input id="isSpectator" type="checkbox" checked={isJoinAsSpectator} onChange={()=>setIsJoinAsSpectator(!isJoinAsSpectator)}></input>
+                  <label htmlFor='isSpectator'>Подключиться как спектатор</label>
+                </p>
+            </Form>
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>)
 }

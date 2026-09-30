@@ -1,9 +1,9 @@
 body{
     --body_margin: 0px;
     margin: var(--body_margin);
-    background-image: url('/connection_background.jpg');
 }
 .container{
+    background: black;
     position: relative;
     display: flex;
     justify-content: center;
@@ -15,6 +15,9 @@ body{
     border-radius: 20px;
     position: relative !important;
     overflow: hidden;
+}
+.connection_form button{
+    align-self: flex-end;
 }
 .connection_form::before{
     position: absolute;

@@ -1,34 +1,35 @@
 .container{
+    background: darkblue;
     display: flex;
     position: relative;
     justify-content: center;
     padding: 100px 200px;
 }
 .registration_form{
-    flex: 1 1 0;
-    width: min-content;
-    font-size: 34px;
-    display: flex;
-    padding: 20px 120px;
-    background: green;
-    gap: 50px;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    align-self: center;
-    justify-self: center;
-    max-width: 500px;
-}
-.registration_form label{
-    text-align: center;
-    white-space: nowrap;
-    padding: 10px;
-}
-.registration_form input{
-    padding: 20px;
+    color: white !important;
+    isolation: isolate;
+    border-radius: 20px;
+    position: relative !important;
+    overflow: hidden;
 }
 .registration_form button{
-    padding: 20px;
+    align-self: flex-end;
+}
+.registration_form::before{
+    position: absolute;
+    content: '';
+    top: -10px;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    background-image: url('/registration_form_background.jpg') !important;
+    background-position: center !important;
+    background-size: cover !important;
+    filter: blur(5px) brightness(0.3);
+    z-index: -1;
+}
+.registration_form button{
+    background: green;
 }
 .isSpectatorContainer label{
     font-size: 20px !important;

@@ -54,7 +54,7 @@ export default function ConnectionWindow()  {
                 
             </Form>
         {isLoading && <div className={styles.loading}><img src={loading_svg} alt="Loading..."></img></div>}
-        {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
+        {errorMessage != '' && <div className={styles.error}>{errorMessage}</div>}
     </div>)
 }
 
@@ -73,6 +73,6 @@ async function TryConnect(url: string, timeout: number, navigate: NavigateFuncti
     })
     await Promise.any([hubConnection.start(), sleep]);
     if (hubConnection.state !== "Connected")
-        throw new Error("Timeout exception");
+        throw new Error("Время подключения вышло");
     return hubConnection;
 }
