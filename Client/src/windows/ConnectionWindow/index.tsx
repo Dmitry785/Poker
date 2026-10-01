@@ -11,11 +11,6 @@ interface HubClientMethods {
     Send: (data: SendData) => void;
 }
 
-const hubConnection = new HubConnectionBuilder()
-    .withUrl("...")
-    .build() as HubConnection & {
-        send<K extends keyof HubClientMethods>(methodName: K, ...args: Parameters<HubClientMethods[K]>): Promise<void>;
-    };
 export default function ConnectionWindow()  {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);

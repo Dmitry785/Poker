@@ -5,12 +5,13 @@ using Server.Domain;
 namespace Server.Application.Services
 {
     public record NicknameConstraint(Predicate<string> Condition, string ErrorMessage);
-    public class RegisterService
+    public class AuthenticationService
     {
         public List<User> RegisteredUsers { get; } = new List<User>();
+        public List<string>? WhiteList { get; set; }
         public bool CanRegistrationOverride { get; set; } = false;
         public List<NicknameConstraint> NicknamePolicies { get; } = new List<NicknameConstraint>();
-        public Result<Guid> Register(string nickname, bool isSpectator)
+        public Result<Guid> Register(string nickname, string password, bool isSpectator)
         {
             var validateNicknameResult = ValidateNickname(nickname);
             if (!validateNicknameResult.Success)
@@ -21,8 +22,17 @@ namespace Server.Application.Services
                     return Result<Guid>.Fail($"Nickname {nickname} already in use");
                 RegisteredUsers.Remove(RegisteredUsers.First(x => x.Nickname == nickname));
             }
-            var user = new User(nickname, isSpectator);
+            var user = new User(nickname, isSpectator, password);
             RegisteredUsers.Add(user);
+            return Result<Guid>.Ok(user.Id);
+        }
+        public Result<Guid> Login(string nickname, string password)
+        {
+            var user = RegisteredUsers.Find(x => x.Nickname == nickname && x.Password == password);
+            if(user is null)
+            {
+                return Result<Guid>.Fail("User not found");
+            }
             return Result<Guid>.Ok(user.Id);
         }
         public Result<User> GetUserRegisterInfoById(Guid? id)
@@ -38,6 +48,8 @@ namespace Server.Application.Services
         }
         private Result ValidateNickname(string nickname)
         {
+            if (WhiteList?.Contains(nickname) ?? false)
+                return Result.Fail("Nickname not in white list");
             foreach (var constraint in NicknamePolicies)
             {
                 if (!constraint.Condition(nickname))

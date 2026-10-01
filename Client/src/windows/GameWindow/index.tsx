@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import type NewMessageEvent from "../../responses/NewMessageEvent.js";
 import axios from "axios";
+import ChatMessage from "../../components/ChatMessage.js";
 
 export default function GameWindow()  {
     const {selfIdRef, hubConnection, setMessages, serverUrl} = useServerContext();
@@ -14,9 +15,11 @@ export default function GameWindow()  {
             navigate("/authentication");
             return;
         }
+        else if (localStorage.getItem("selfId")){
+            alert("Войдите заного");
+        }
         hubConnection.on('NewMessage', (message: NewMessageEvent)=>{
-            setMessages(prev => [...prev, {sender: message.sender, 
-                message: message.message, timestamp: message.timestamp}]);
+            setMessages(prev => [...prev, {message: message.message, sender: message.sender, timestamp: message.timestamp}]);
         });
         hubConnection.on('Warning', (message)=>{alert(message)});
         const chatUpdateUrl = new URL("/load/chat", serverUrl);

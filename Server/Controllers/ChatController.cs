@@ -9,8 +9,9 @@ namespace Server.Controllers
 {
     public class ChatController : Controller
     {
-        public async Task<IActionResult> SendMessage(SendTextMessageReuqest request, IHubContext<ChatHub> hubContext, 
-            [FromServices]RegisterService regService, [FromServices]ChatService chatService)
+        [HttpPost("/send/text")]
+        public async Task<IActionResult> SendTextMessage([FromBody]SendTextMessageReuqest request, [FromServices]IHubContext<ChatHub> hubContext, 
+            [FromServices]AuthenticationService regService, [FromServices]ChatService chatService)
         {
             var result = regService.GetUserRegisterInfoById(request.Id);
             if (!result.Success)

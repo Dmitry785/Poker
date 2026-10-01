@@ -4,15 +4,12 @@ import Player from "./Player.js";
 import { Link } from "react-router";
 import styles from "./styles/poker.module.css";
 
-export default class PokerTable extends React.Component{
-    constructor(args: any){
-        super(args);
-    }
+export default class PokerTable extends React.Component<{width: number, height: number}>{
     render(){
         return (
             <div className={styles.container}>
                 <Link to="/game/chat">Чат</Link>
-                <Stage width={window.innerWidth} height={window.innerHeight}>
+                <Stage width={this.props.width} height={this.props.height}>
                     <Layer>
                         <Group draggable x={50} y={50}>
                             <Rect stroke="black" strokeWidth={5} width={1000} height={500} fill="green" x={50} y={50} cornerRadius={500}>   

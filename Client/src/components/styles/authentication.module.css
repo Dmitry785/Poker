@@ -1,0 +1,46 @@
+.container{
+    background: darkblue;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    padding: 100px 10px;
+}
+.form{
+    color: white !important;
+    isolation: isolate;
+    border-radius: 20px;
+    position: relative !important;
+    overflow: hidden;
+}
+.form button{
+    align-self: flex-end;
+}
+.form::before{
+    position: absolute;
+    content: '';
+    top: -10px;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    background-image: url('/registration_form_background.jpg') !important;
+    background-position: center !important;
+    background-size: cover !important;
+    filter: blur(5px) brightness(0.3);
+    z-index: -1;
+}
+.form button{
+    background: green;
+}
+.isSpectatorContainer label{
+    font-size: 20px !important;
+}
+.isSpectatorContainer input{
+    transform: scale(1.5);
+}
+.error{
+    position: absolute;
+    top: 10px; 
+    padding: 20px 50px;
+    border-radius: 10px;
+    background: rgba(212, 98, 98, 0.577);
+}

@@ -14,7 +14,7 @@ namespace Server.Hubs
         {
             _chatService = chatService;
         }
-        public async Task Send(SendTextMessageReuqest request, [FromServices]RegisterService regService)
+        public async Task Send(SendTextMessageReuqest request, [FromServices]AuthenticationService regService)
         {
             var result = regService.GetUserRegisterInfoById(request.Id);
             if (!result.Success)

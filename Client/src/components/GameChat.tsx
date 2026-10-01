@@ -3,17 +3,21 @@ import ChatMessage from "./ChatMessage.js"
 import { useState } from "react";
 import { useServerContext } from "../hooks/useServerContext.js";
 import { Link } from "react-router";
+import axios from "axios";
 
 export default function GameChat(){
     const [backgroundUrl, setBackgroundUrl] = useState("1");
     const [draftMessage, setDraftMessage] = useState('');
-    const {hubConnection, selfIdRef, messages} = useServerContext();
+    const {serverUrl, selfIdRef, messages} = useServerContext();
     const onSendMessage = (e: React.SubmitEvent<HTMLFormElement>)=>{
         e.preventDefault();
         if(draftMessage == ''){
             return;
         }
-        hubConnection!.send("Send", {Id: selfIdRef.current, Message: draftMessage});
+        const url = new URL("/send/text", serverUrl);
+        //hubConnection!.send("Send", {Id: selfIdRef.current, Message: draftMessage});
+        axios.post(url.href, {Id: selfIdRef.current, Message: draftMessage})
+        .catch(err=>alert(err));
         setDraftMessage('');
     }
     return (<div className={styles.container}>

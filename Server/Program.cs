@@ -28,7 +28,7 @@ namespace Server
             var gameService = new GameService()
                 .WithPlayerAvailable(6)
                 .WithStartMoney(1000);
-            var registerService = new RegisterService()
+            var registerService = new AuthenticationService()
                 .WithPlayerRegistrationOverrideAvailability()
                 .WithPlayerNameConstraint(x=>!String.IsNullOrEmpty(x), "Никнейм не должен быть пустым");
 
