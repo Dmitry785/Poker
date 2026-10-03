@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Server.Application.Services;
+using Server.Domain;
 using Server.Requests;
 using Server.Responses;
 
@@ -16,14 +17,15 @@ namespace Server.Hubs
         }
         public async Task Send(SendTextMessageReuqest request, [FromServices]AuthenticationService regService)
         {
-            var result = regService.GetUserRegisterInfoById(request.Id);
-            if (!result.Success)
+            var userResult = regService.GetUserById(request.id);
+            if (!userResult.Success)
             {
                 await Clients.Caller.SendAsync("Warning", "Неверный токен");
                 return;
             }
-            var message = _chatService.StoreTextMessage(result.Value!, request.Message);
-            await Clients.All.SendAsync("NewMessage", new ChatMessageData(message.UserIdentify.Nickname, message.Text, message.Timestamp));
+            var message = new Message(userResult.Value!, request.text);
+            _chatService.StoreMessage(message);
+            await Clients.All.SendAsync("TextMessage", new ChatTextMessageData(message.UserIdentify.Nickname, message.Text, message.Timestamp));
         }
         public override async Task OnConnectedAsync()
         {

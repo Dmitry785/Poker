@@ -1,0 +1,14 @@
+.container{
+    position: relative;
+}
+.side_panel{
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    
+}
+.side_panel:hover{
+    width: fit-content;
+}

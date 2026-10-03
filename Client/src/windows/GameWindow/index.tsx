@@ -3,9 +3,9 @@ import { useServerContext } from "../../hooks/useServerContext.js";
 import PokerTable from "../../components/PokerTable.js";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
-import type NewMessageEvent from "../../responses/NewMessageEvent.js";
+import type TextMessageEvent from "../../responses/TextMessageEvent.js";
+import type FileMessageEvent from "../../responses/FileMessageEvent.js";
 import axios from "axios";
-import ChatMessage from "../../components/ChatMessage.js";
 
 export default function GameWindow()  {
     const {selfIdRef, hubConnection, setMessages, serverUrl} = useServerContext();
@@ -15,24 +15,31 @@ export default function GameWindow()  {
             navigate("/authentication");
             return;
         }
-        else if (localStorage.getItem("selfId")){
-            alert("Войдите заного");
-        }
-        hubConnection.on('NewMessage', (message: NewMessageEvent)=>{
-            setMessages(prev => [...prev, {message: message.message, sender: message.sender, timestamp: message.timestamp}]);
+        hubConnection.on('TextMessage', (message: TextMessageEvent)=>{
+            setMessages(prev => [...prev, {message: message.text, sender: message.sender, timestamp: message.timestamp}]);
         });
-        hubConnection.on('Warning', (message)=>{alert(message)});
+        hubConnection.on('FileMessage', (message: FileMessageEvent)=>{
+            alert(message.fileUrl);
+        })
+        hubConnection.on('Warning', (message)=>{
+            alert(message);
+        });
         const chatUpdateUrl = new URL("/load/chat", serverUrl);
         axios.get(chatUpdateUrl.href)
-        .then(x=>setMessages(x.data))
-        .catch(err=>alert(err.message));
+            .then(x=>setMessages(x.data))
+            .then(()=>alert("uploaded"))
+            .catch(err=>alert(err.message));
         
         return ()=>{
-            hubConnection!.off("NewMessage");
+            hubConnection!.off("TextMessage");
+            hubConnection!.off("FileMessage");
             hubConnection!.off("Warning");
         }
     }, [])
-    return (<div>
+    return (<div className="container">
+        <div className="side_panel">
+
+        </div>
         Game {selfIdRef.current}
         <Outlet></Outlet>
     </div>)

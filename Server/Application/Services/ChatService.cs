@@ -6,11 +6,9 @@ namespace Server.Application.Services
     public class ChatService
     {
         public List<Message> Messages { get; } = new List<Message>();
-        public Message StoreTextMessage(User user, string text)
+        public void StoreMessage(Message message)
         {
-            var message = new Message(user, text);
             Messages.Add(message);
-            return message;
         }
     }
 }

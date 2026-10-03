@@ -11,6 +11,11 @@ namespace Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            if(!Directory.Exists("Static"))
+            {
+                Directory.CreateDirectory("Static");
+            }
+
             //Services conriguration
             builder.Services.AddCors((options) =>
             {

@@ -35,7 +35,7 @@ namespace Server.Application.Services
             }
             return Result<Guid>.Ok(user.Id);
         }
-        public Result<User> GetUserRegisterInfoById(Guid? id)
+        public Result<User> GetUserById(Guid? id)
         {
             if (id == null)
                 return Result<User>.Fail("Id is null");

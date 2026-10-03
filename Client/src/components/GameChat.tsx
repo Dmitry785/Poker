@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useServerContext } from "../hooks/useServerContext.js";
 import { Link } from "react-router";
 import axios from "axios";
+import type SendData from "../requests/SendRequest.js";
 
 export default function GameChat(){
     const [backgroundUrl, setBackgroundUrl] = useState("1");
@@ -16,7 +17,8 @@ export default function GameChat(){
         }
         const url = new URL("/send/text", serverUrl);
         //hubConnection!.send("Send", {Id: selfIdRef.current, Message: draftMessage});
-        axios.post(url.href, {Id: selfIdRef.current, Message: draftMessage})
+        const sendData: SendData = {id: selfIdRef.current!, text: draftMessage}
+        axios.post(url.href, sendData)
         .catch(err=>alert(err));
         setDraftMessage('');
     }
