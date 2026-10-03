@@ -23,7 +23,6 @@ export default function GameChat(){
         setDraftMessage('');
     }
     return (<div className={styles.container}>
-        <Link to="/game">Вернуться к столу</Link>
         <div className={styles.background_selector}>
             <button onClick={()=>setBackgroundUrl(`1`)}>Грибочки</button>
             <button onClick={()=>setBackgroundUrl(`2`)}>Котики</button>

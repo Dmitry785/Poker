@@ -1,14 +1,12 @@
-import React, { createRef } from "react"
+import React from "react"
 import { Group, Rect, Stage, Layer } from "react-konva"
 import Player from "./Player.js";
-import { Link } from "react-router";
 import styles from "./styles/poker.module.css";
 
 export default class PokerTable extends React.Component<{width: number, height: number}>{
     render(){
         return (
             <div className={styles.container}>
-                <Link to="/game/chat">Чат</Link>
                 <Stage width={this.props.width} height={this.props.height}>
                     <Layer>
                         <Group draggable x={50} y={50}>

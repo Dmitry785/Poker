@@ -7,7 +7,7 @@ import Form from '../../components/Form.js';
 
 
 export default function AuthenticationWindow() {
-  const {hubConnection} = useServerContext();
+  const {hubConnection, selfIdRef} = useServerContext();
   const navigate = useNavigate();
   useEffect(()=>{
     if(!hubConnection || hubConnection.state !== "Connected"){

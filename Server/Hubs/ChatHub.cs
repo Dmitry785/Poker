@@ -15,7 +15,7 @@ namespace Server.Hubs
         {
             _chatService = chatService;
         }
-        public async Task Send(SendTextMessageReuqest request, [FromServices]AuthenticationService regService)
+        public async Task Send(SendMessageReuqest request, [FromServices]AuthenticationService regService)
         {
             var userResult = regService.GetUserById(request.id);
             if (!userResult.Success)
@@ -25,7 +25,7 @@ namespace Server.Hubs
             }
             var message = new Message(userResult.Value!, request.text);
             _chatService.StoreMessage(message);
-            await Clients.All.SendAsync("TextMessage", new ChatTextMessageData(message.UserIdentify.Nickname, message.Text, message.Timestamp));
+            await Clients.All.SendAsync("NewMessage", ChatMessageData.ConvertFromMessage(message));
         }
         public override async Task OnConnectedAsync()
         {

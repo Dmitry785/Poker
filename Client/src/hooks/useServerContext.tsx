@@ -1,6 +1,7 @@
 import { HubConnection } from "@microsoft/signalr";
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
-import type { ChatMessageProps } from "../components/ChatMessage.js";
+import type {ChatMessageData} from "../data/ChatMessageData.js";
+
 
 interface ServerContextType {
     serverUrl: string;
@@ -11,8 +12,8 @@ interface ServerContextType {
     selfIdRef: React.RefObject<string | undefined>;
     nickname: string;
     setNickname: React.Dispatch<React.SetStateAction<string>>;
-    messages: ChatMessageProps[];
-    setMessages: React.Dispatch<React.SetStateAction<ChatMessageProps[]>>;
+    messages: ChatMessageData[];
+    setMessages: React.Dispatch<React.SetStateAction<ChatMessageData[]>>;
 }
 
 const ServerContext = createContext<ServerContextType | undefined>(undefined);
@@ -22,16 +23,15 @@ const defaultServerUrl = "http://10.0.0.159:5057";
 export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const [hubConnection, setHubConnection] = useState<HubConnection | undefined>(undefined);
     const [nickname, setNickname] = useState('');
-    const [messages, setMessages] = useState<ChatMessageProps[]>([]);
+    const [messages, setMessages] = useState<ChatMessageData[]>([]);
     const [serverUrl, setServerUrl] = useState(localStorage.getItem("server_url") || defaultServerUrl);
     const storeServerUrl = useCallback((url: string) => {
         localStorage.setItem("server_url", url);
     }, []);
     const selfIdRef = useRef<string | undefined>(localStorage.getItem("selfId") || undefined);
-    const context = useMemo(()=>({hubConnection, setHubConnection, 
+    const context = {hubConnection, setHubConnection, 
         serverUrl, setServerUrl, storeServerUrl, selfIdRef,
-         nickname, setNickname, messages, setMessages}),
-         [serverUrl, hubConnection, nickname, messages]);
+         nickname, setNickname, messages, setMessages};
     return (
         <ServerContext.Provider value={context}>
             {children}

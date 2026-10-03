@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Application.Services;
+using Server.Domain;
 using Server.Responses;
 
 namespace Server.Controllers
 {
+    [Route("/load")]
     public class UpdateController : Controller
     {
-        [HttpGet("/load/chat")]
+        [HttpGet("chat")]
         public IActionResult LoadChat([FromServices]ChatService chatService)
         {
-            return Ok(chatService.Messages.Select(x=>new ChatTextMessageData(x.UserIdentify.Nickname, x.Text, x.Timestamp)));
+            return Ok(chatService.Messages.Select(x=>ChatMessageData.ConvertFromMessage(x)));
         }
     }
 }

@@ -24,20 +24,23 @@
     text-align: center;
 }
 .form label{
-    font-size: 32px;
+    font-size: 28px;
     text-align: left;
     white-space: nowrap;
     padding: 10px;
 }
 .form input{
-    font-size: 28px;
+    font-size: 24px;
     padding: 20px;
-    border-radius: 20px;
+    border-radius: 15px;
 }
 .form button{
     margin-top: auto;
-    font-size: 28px;
-    border-radius: 20px;
+    font-size: 24px;
+    border-radius: 15px;
     background: darkgoldenrod;
     padding: 20px;
+}
+.form button:hover{
+    font-weight: bold;
 }

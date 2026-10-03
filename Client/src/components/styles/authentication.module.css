@@ -44,3 +44,6 @@
     border-radius: 10px;
     background: rgba(212, 98, 98, 0.577);
 }
+.input_error{
+    border-color: red;
+}
