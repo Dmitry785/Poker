@@ -3,7 +3,9 @@
     display: flex;
     position: relative;
     justify-content: center;
-    padding: 100px 10px;
+    padding: 80px 10px;
+    box-sizing: border-box;
+    height: 100vh;
 }
 .form{
     color: white !important;
@@ -12,8 +14,18 @@
     position: relative !important;
     overflow: hidden;
 }
+.form p {
+    display: flex;
+}
+.form p input{
+    margin-left: auto;
+}
 .form button{
     align-self: flex-end;
+    background: green;
+}
+.form button:hover{
+    font-weight: bold;
 }
 .form::before{
     position: absolute;
@@ -27,9 +39,6 @@
     background-size: cover !important;
     filter: blur(5px) brightness(0.3);
     z-index: -1;
-}
-.form button{
-    background: green;
 }
 .isSpectatorContainer label{
     font-size: 20px !important;
@@ -46,4 +55,5 @@
 }
 .input_error{
     border-color: red;
+    color: red;
 }

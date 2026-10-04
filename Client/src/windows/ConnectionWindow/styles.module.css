@@ -8,6 +8,8 @@ body{
     display: flex;
     justify-content: center;
     padding: 80px 50px;
+    box-sizing: border-box;
+    height: 100vh;
 }
 .connection_form{
     color: white !important;

@@ -28,9 +28,11 @@ export default function GameChat(){
             <button onClick={()=>setBackgroundUrl(`2`)}>Котики</button>
             <button onClick={()=>setBackgroundUrl(`3`)}>Кирпич</button>
         </div>
-        <div className={styles.list} style={{backgroundImage: `url(${new URL(`chat_background_${backgroundUrl}.jpg`, window.location.origin).href})`}}>
+        {false ? (<div className={styles.list} style={{backgroundImage: `url(${new URL(`chat_background_${backgroundUrl}.jpg`, window.location.origin).href})`}}>
             {messages.map((message, index)=>(<ChatMessage key={index} {...message}></ChatMessage>))}
-        </div>
+        </div>) : (<div className={styles.list} style={{backgroundImage: `url(https://pic.rtbcdn.ru/video/36/67/3667e12ba51cf418315c36018bed8f40.jpg)`}}>
+            {messages.map((message, index)=>(<ChatMessage key={index} {...message}></ChatMessage>))}
+        </div>)}
         <form className={styles.panel} onSubmit={onSendMessage}>
             <input placeholder="Введите сообщение" value={draftMessage} onInput={(e)=>{setDraftMessage((e.target as HTMLInputElement).value)}}></input>
             <button>Отправить</button>

@@ -35,7 +35,9 @@ namespace Server
                 .WithStartMoney(1000);
             var registerService = new AuthenticationService()
                 .WithPlayerRegistrationOverrideAvailability()
-                .WithPlayerNameConstraint(x=>!String.IsNullOrEmpty(x), "Никнейм не должен быть пустым");
+                .WithNicknameConstraint(x=>!String.IsNullOrEmpty(x), "Никнейм не должен быть пустым")
+                .WithPasswordConstraint(x => !String.IsNullOrEmpty(x), "Пароль не должен быть пустым")
+                .WithPasswordConstraint(x => x.Length <= 8, "Пароль должен быть не больше 8 символов");
 
             builder.Services.AddSingleton(registerService);
             builder.Services.AddSingleton(gameService);

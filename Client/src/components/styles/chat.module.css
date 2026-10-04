@@ -11,6 +11,8 @@
     width: 500px;
     overflow-y: auto;
     gap: 20px;
+    background-position: right;
+    background-size: cover;
     align-items: flex-end;
 }
 .message{

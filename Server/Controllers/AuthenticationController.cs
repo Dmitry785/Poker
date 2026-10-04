@@ -6,7 +6,7 @@ namespace Server.Controllers
 {
     public class AuthenticationController : Controller
     {
-        [HttpGet("/reg")]
+        [HttpGet("/register")]
         public IActionResult Register(RegisterRequest request, [FromServices] AuthenticationService regService)
         {
             var result = regService.Register(request.nickname, request.password, request.isSpectator);
@@ -14,6 +14,7 @@ namespace Server.Controllers
                 return Ok(result.Value);
             return BadRequest(result.ErrorMessage);
         }
+        [HttpGet("/login")]
         public IActionResult Login(LoginRequest request, [FromServices]AuthenticationService regService)
         {
             var result = regService.Login(request.nickname, request.password);

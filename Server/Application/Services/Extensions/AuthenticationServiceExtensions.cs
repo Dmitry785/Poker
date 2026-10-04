@@ -13,9 +13,14 @@
             return service;
         }
 
-        static public AuthenticationService WithPlayerNameConstraint(this AuthenticationService service, Predicate<string> constraint, string errorMessage)
+        static public AuthenticationService WithNicknameConstraint(this AuthenticationService service, Predicate<string> constraint, string errorMessage)
         {
-            service.NicknamePolicies.Add(new NicknameConstraint(constraint, errorMessage));
+            service.NicknamePolicies.Add(new Constraint<string>(constraint, errorMessage));
+            return service;
+        }
+        static public AuthenticationService WithPasswordConstraint(this AuthenticationService service, Predicate<string> constraint, string errorMessage)
+        {
+            service.PasswordPolicies.Add(new Constraint<string>(constraint, errorMessage));
             return service;
         }
     }

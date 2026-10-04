@@ -11,7 +11,7 @@
     flex: 1 1 0;
 }
 .container{
-    padding: 50px 5px 10px 5px;
+    padding: 30px 5px 10px 5px;
     display: flex;
     flex-direction: column;
     width: min-content;
@@ -19,27 +19,28 @@
     background: orange;
 }
 .container .header{
-    margin: 50px 5px;
+    margin: 10px 5px;
     font-size: 36px;
     text-align: center;
 }
 .form label{
-    font-size: 28px;
+    font-size: 24px;
     text-align: left;
     white-space: nowrap;
     padding: 10px;
 }
 .form input{
     font-size: 24px;
-    padding: 20px;
+    margin-top: 5px;
+    padding: 10px;
     border-radius: 15px;
 }
 .form button{
     margin-top: auto;
-    font-size: 24px;
-    border-radius: 15px;
+    font-size: 20px;
+    border-radius: 10px;
     background: darkgoldenrod;
-    padding: 20px;
+    padding: 10px 20px;
 }
 .form button:hover{
     font-weight: bold;

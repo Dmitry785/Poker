@@ -16,15 +16,10 @@ export default function Register(){
         e.preventDefault();
         setErrorMessage('');
         try{  
-            const serverRegistrationEndpoint = new URL("/reg", serverUrl);
-            serverRegistrationEndpoint.searchParams.append("nickname", nickname);
-            serverRegistrationEndpoint.searchParams.append("password", password);
-            serverRegistrationEndpoint.searchParams.append("isSpectator", isJoinAsSpectator ? "1":"0");
-            const response = await axios.get(serverRegistrationEndpoint.href);
-            if(!response.data)
-                throw new Error("Response has no data");
-            selfIdRef.current = response.data;
-            localStorage.setItem("selfId", response.data);
+            const result = await TryRegister(serverUrl,
+                 nickname, password, isJoinAsSpectator);
+            selfIdRef.current = result;
+            localStorage.setItem("selfId", result);
             navigate("/game");
         }
         catch(err){
@@ -56,4 +51,14 @@ export default function Register(){
         </Form>
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>);
+}
+async function TryRegister(serverUrl: string, nickname: string, password: string, isSpec: boolean): Promise<string>{
+    const serverRegistrationEndpoint = new URL("/register", serverUrl);
+    serverRegistrationEndpoint.searchParams.append("nickname", nickname);
+    serverRegistrationEndpoint.searchParams.append("password", password);
+    serverRegistrationEndpoint.searchParams.append("isSpectator", isSpec ? "1":"0");
+    const response = await axios.get(serverRegistrationEndpoint.href);
+    if(!response.data)
+        throw new Error("Response has no data");
+    return response.data;
 }

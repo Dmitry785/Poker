@@ -44,7 +44,6 @@ export default function Login(){
         }
     }
     return (<div className={styles.container}>
-    <Link to="/authentication/register">Регстрация</Link>
     <Form buttonText="Войти" 
         header="Вход"
         className={styles.form}
@@ -59,11 +58,12 @@ export default function Login(){
             </p>
         </Form>
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
+        <Link to="/authentication/register">Регстрация</Link>
     </div>
     );
 }
 async function TryLogin(serverUrl: string, nickname: string, password: string): Promise<string>{
-    const serverRegistrationEndpoint = new URL("/reg", serverUrl);
+    const serverRegistrationEndpoint = new URL("/login", serverUrl);
     serverRegistrationEndpoint.searchParams.append("nickname", nickname);
     serverRegistrationEndpoint.searchParams.append("password", password);
     const response = await axios.get(serverRegistrationEndpoint.href);
