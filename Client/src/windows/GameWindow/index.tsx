@@ -5,31 +5,46 @@ import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router";
 import axios from "axios";
 import type {MessageData} from "../../responses/MessageData.js";
+import { HubConnection, HubConnectionState } from "@microsoft/signalr";
 
 export default function GameWindow()  {
-    const {selfIdRef, hubConnection, setMessages, serverUrl} = useServerContext();
+    const {selfIdRef, setMessages, serverUrl, hubConnection, connect} = useServerContext();
     const navigate = useNavigate();
     useEffect(()=>{
-        if (!selfIdRef.current || !hubConnection || hubConnection.state !== "Connected"){
-            navigate("/connect");
-            return;
-        }
-        hubConnection.on('NewMessage', (message: MessageData)=>{
-            setMessages(prev => [...prev, message]);
-        });
-        hubConnection.on('Warning', (message)=>{
-            alert(message);
-        });
-        const chatUpdateUrl = new URL("/load/chat", serverUrl);
-        axios.get(chatUpdateUrl.href)
-            .then(x=>setMessages(x.data))
-            .catch(err=>alert(err.message));
+        let lock = true;
+        let activeHubConnection: HubConnection | null = null;
+       
+        connect()
+            .then((hubConnection)=>{
+                if(!lock) return;
+                activeHubConnection = hubConnection;
+                hubConnection.on('NewMessage', (message: MessageData)=>{
+                    if(lock) setMessages(prev => [...prev, message]);
+                });
+                hubConnection.on('Warning', (message)=>{
+                    if(lock) alert(message);
+                });
+                const chatUpdateUrl = new URL("/load/chat", serverUrl);
+                axios.get(chatUpdateUrl.href)
+                    .then(x=>{
+                        if (lock) 
+                            setMessages(x.data);})
+                    .catch(err=>{
+                        if (lock) 
+                            alert(err.message);});
+            })
+            .catch(()=>{
+                if(lock) navigate("/connect", {replace: true});
+            });
         
         return ()=>{
-            hubConnection!.off("NewMessage");
-            hubConnection!.off("Warning");
+            lock = false;
+            if(activeHubConnection){
+                activeHubConnection.off("NewMessage");
+                activeHubConnection.off("Warning");
+            }
         }
-    }, [])
+    }, [hubConnection, navigate]);
     return (<div className="container">
         <div className="side_panel">
             <Link to={'/game/chat'}>Chat</Link>

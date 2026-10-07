@@ -10,11 +10,26 @@ export default function Register(){
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isJoinAsSpectator, setIsJoinAsSpectator] = useState(false);
+    const [hasNicknameError, setHasNicknameError] = useState(false);
+    const [hasPasswordError, setHasPasswordError] = useState(false);
     const {serverUrl, selfIdRef, nickname, setNickname} = useServerContext();
     const navigate = useNavigate();
+    
     const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrorMessage('');
+        if(nickname == ''){
+            setHasNicknameError(true);
+            setErrorMessage("Введите имя");
+            return;
+        }
+        setHasNicknameError(false);
+        if(password == ''){
+            setHasPasswordError(true);
+            setErrorMessage("Введите пароль");
+            return;
+        }
+        setHasPasswordError(false);
         try{  
             const result = await TryRegister(serverUrl,
                  nickname, password, isJoinAsSpectator);
@@ -38,11 +53,11 @@ export default function Register(){
         onFormSubmit={onSubmit}>
             <p>
                 <label htmlFor="nickname">Имя</label>
-                <input id="nickname" value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}/>
+                <input className={hasNicknameError ? styles.input_error : ""} id="nickname" value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}/>
             </p>
             <p>
                 <label htmlFor="password">Пароль</label>
-                <input id="password" value={password} onInput={(e)=>setPassword((e.target as HTMLInputElement).value)}/>
+                <input className={hasPasswordError ? styles.input_error : ""} id="password" value={password} onInput={(e)=>setPassword((e.target as HTMLInputElement).value)}/>
             </p>
             <p className={styles.isSpectatorContainer}>
                 <input id="isSpectator" type="checkbox" checked={isJoinAsSpectator} onChange={()=>setIsJoinAsSpectator(!isJoinAsSpectator)}></input>

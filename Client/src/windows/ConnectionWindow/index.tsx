@@ -7,28 +7,19 @@ import loading_svg from "../../assets/loading.svg";
 import type SendData from "../../requests/SendRequest.js";
 import Form from "../../components/Form.js";
 
-interface HubClientMethods {
-    Send: (data: SendData) => void;
-}
 
 export default function ConnectionWindow()  {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const {serverUrl, setServerUrl, storeServerUrl, hubConnection, setHubConnection} = useServerContext();
-    useEffect(()=>{
-        if (!hubConnection || hubConnection.state !== "Connected")
-            return;
-        hubConnection.stop();
-    }, [])
+    const {serverUrl, setServerUrl, storeServerUrl, hubConnection, connect} = useServerContext();
     const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         storeServerUrl(serverUrl);
         setErrorMessage('');
         setIsLoading(true);
-        await TryConnect(serverUrl, 2000, navigate)
+        await connect()
             .then((hubConnection)=>{
-                setHubConnection(hubConnection);
                 navigate("/authentication");
             }).catch((err: Error)=>{
                 setErrorMessage(err.message)
@@ -51,23 +42,4 @@ export default function ConnectionWindow()  {
         {isLoading && <div className={styles.loading}><img src={loading_svg} alt="Loading..."></img></div>}
         {errorMessage != '' && <div className={styles.error}>{errorMessage}</div>}
     </div>)
-}
-
-async function TryConnect(url: string, timeout: number, navigate: NavigateFunction): Promise<HubConnection>{
-    const sleep = new Promise((resolver)=>setTimeout(resolver, timeout));
-    const hubURL = new URL("chat", url);
-    const hubConnection = new HubConnectionBuilder()
-        .withUrl(hubURL.href)
-        .withAutomaticReconnect([1000])
-        .configureLogging(LogLevel.Information)
-        .build() as HubConnection & {
-            send<T extends keyof HubClientMethods>(methodName: T, ...args: Parameters<HubClientMethods[T]>): Promise<void>
-        };
-    hubConnection.onclose(()=>{
-      navigate("/connect");
-    })
-    await Promise.any([hubConnection.start(), sleep]);
-    if (hubConnection.state !== "Connected")
-        throw new Error("Время подключения вышло");
-    return hubConnection;
 }

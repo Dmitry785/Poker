@@ -50,11 +50,11 @@ export default function Login(){
         onFormSubmit={onSubmit}>
             <p>
                 <label htmlFor="nickname">Имя</label>
-                <input className={hasNicknameError ? "input_error" : ""} id="nickname" value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}/>
+                <input className={hasNicknameError ? styles.input_error : ""} id="nickname" value={nickname} onInput={(e)=>setNickname((e.target as HTMLInputElement).value)}/>
             </p>
             <p>
                 <label htmlFor="password">Пароль</label>
-                <input  className={hasPasswordError ? "input_error" : ""} id="password" value={password} onInput={(e)=>setPassword((e.target as HTMLInputElement).value)}/>
+                <input className={hasPasswordError ? styles.input_error : ""} id="password" value={password} onInput={(e)=>setPassword((e.target as HTMLInputElement).value)}/>
             </p>
         </Form>
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
