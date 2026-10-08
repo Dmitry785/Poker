@@ -1,18 +1,16 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./styles.module.css";
-import { useNavigate, type NavigateFunction } from "react-router";
+import { useNavigate } from "react-router";
 import { useServerContext } from "../../hooks/useServerContext.js";
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import loading_svg from "../../assets/loading.svg";
-import type SendData from "../../requests/SendRequest.js";
 import Form from "../../components/Form.js";
+import loading_svg from "../../assets/loading.svg";
 
 
 export default function ConnectionWindow()  {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const {serverUrl, setServerUrl, storeServerUrl, hubConnection, connect} = useServerContext();
+    const {serverUrl, setServerUrl, storeServerUrl, connect} = useServerContext();
     const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         storeServerUrl(serverUrl);

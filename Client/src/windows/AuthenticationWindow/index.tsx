@@ -1,14 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { useServerContext } from '../../hooks/useServerContext.js';
 import styles from "./styles.module.css";
 import { Outlet, useNavigate } from 'react-router';
-import axios from 'axios';
-import Form from '../../components/Form.js';
-import { HubConnection, HubConnectionState } from '@microsoft/signalr';
-
 
 export default function AuthenticationWindow() {
-  const {selfIdRef, serverUrl, hubConnection, connect} = useServerContext();
+  const {hubConnection, connect} = useServerContext();
   const navigate = useNavigate();
   useEffect(()=>{
         let lock = true;
@@ -19,14 +15,13 @@ export default function AuthenticationWindow() {
                 hubConnection.onclose(()=>{if(lock) navigate("/connect", {replace: true})});
             })
             .catch(()=>{
-                if(lock) navigate("/connect", {replace: true});
+                navigate("/connect", {replace: true});
             });
         
         return ()=>{
             lock = false;
         }
     }, [navigate]);
-  if(!hubConnection) return null;
   
   return (
     <div>

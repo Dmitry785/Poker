@@ -1,11 +1,10 @@
-import { Layer, Stage } from "react-konva";
 import { useServerContext } from "../../hooks/useServerContext.js";
-import PokerTable from "../../components/PokerTable.js";
 import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router";
 import axios from "axios";
+import styles from "./styles.module.css";
 import type {MessageData} from "../../responses/MessageData.js";
-import { HubConnection, HubConnectionState } from "@microsoft/signalr";
+import { HubConnection } from "@microsoft/signalr";
 
 export default function GameWindow()  {
     const {selfIdRef, setMessages, serverUrl, hubConnection, connect} = useServerContext();
@@ -34,7 +33,7 @@ export default function GameWindow()  {
                             alert(err.message);});
             })
             .catch(()=>{
-                if(lock) navigate("/connect", {replace: true});
+                navigate("/connect", {replace: true});
             });
         
         return ()=>{
@@ -45,8 +44,8 @@ export default function GameWindow()  {
             }
         }
     }, [hubConnection, navigate]);
-    return (<div className="container">
-        <div className="side_panel">
+    return (<div className={styles.container}>
+        <div className={styles.side_panel}>
             <Link to={'/game/chat'}>Chat</Link>
             <Link to={'/game'}>Table</Link>
         </div>

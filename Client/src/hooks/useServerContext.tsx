@@ -1,8 +1,7 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
-import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import React, { createContext, useCallback, useContext, useRef, useState } from "react";
 import type {ChatMessageData} from "../data/ChatMessageData.js";
 import type SendData from "../requests/SendRequest.js";
-import { useNavigate } from "react-router";
 
 
 interface ServerContextType {
@@ -50,8 +49,9 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
         if(hubConnectionPromiseRef.current)
             return hubConnectionPromiseRef.current;
         hubConnectionPromiseRef.current = (async () =>{
-            if(hubConnectionRef.current)
+            if(hubConnectionRef.current){
                 await hubConnectionRef.current.stop();
+            }
             hubConnectionRef.current = new HubConnectionBuilder()
                 .withUrl(hubURL.href)
                 .withAutomaticReconnect([1000])
@@ -71,7 +71,7 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
                 return hubConnectionRef.current;
             }
             catch(err){
-                hubConnectionRef.current.stop().catch(err => console.error("Ошибка при остановке hubConnection"));
+                hubConnectionRef.current.stop();
                 hubConnectionRef.current = null;
                 setHubConnection(null);
                 throw err;

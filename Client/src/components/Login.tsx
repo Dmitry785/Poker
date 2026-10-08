@@ -57,8 +57,8 @@ export default function Login(){
                 <input className={hasPasswordError ? styles.input_error : ""} id="password" value={password} onInput={(e)=>setPassword((e.target as HTMLInputElement).value)}/>
             </p>
         </Form>
-        {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
         <Link to="/authentication/register">Регстрация</Link>
+        {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>
     );
 }

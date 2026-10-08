@@ -46,7 +46,6 @@ export default function Register(){
         }
     }
     return (<div className={styles.container}>
-    <Link to="/authentication">Вход</Link>
     <Form buttonText="Зарегистрироваться" 
         header="Регистрация"
         className={styles.form}
@@ -64,6 +63,7 @@ export default function Register(){
                 <label htmlFor='isSpectator'>Подключиться как спектатор</label>
             </p>
         </Form>
+        <Link to="/authentication">Вход</Link>
         {errorMessage != '' && <div className={styles.error}>Error: {errorMessage}</div>}
     </div>);
 }

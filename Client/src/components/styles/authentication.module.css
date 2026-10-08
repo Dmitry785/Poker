@@ -1,21 +1,25 @@
 .container{
     background: darkblue;
     display: flex;
+    flex-direction: column;
     position: relative;
     justify-content: center;
-    padding: 80px 10px;
+    padding: 30px 10px;
     box-sizing: border-box;
     height: 100vh;
+    align-items: center;
+    gap: 20px;
 }
 .form{
     color: white !important;
     isolation: isolate;
     border-radius: 20px;
     position: relative !important;
-    overflow: hidden;
+    flex: 1 1 0;
 }
 .form p {
     display: flex;
+    align-items: center;
 }
 .form p input{
     margin-left: auto;
@@ -55,5 +59,5 @@
 }
 .input_error{
     border-color: red;
-    color: red;
+    border-width: 3px;
 }

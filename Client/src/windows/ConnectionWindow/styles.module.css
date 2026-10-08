@@ -7,7 +7,7 @@ body{
     position: relative;
     display: flex;
     justify-content: center;
-    padding: 80px 50px;
+    padding: 80px 10px;
     box-sizing: border-box;
     height: 100vh;
 }
@@ -16,7 +16,15 @@ body{
     isolation: isolate;
     border-radius: 20px;
     position: relative !important;
-    overflow: hidden;
+}
+.connection_form p {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-items: flex-start;
+}
+.connection_form p input{
+    margin-left: auto;
 }
 .connection_form button{
     align-self: flex-end;
@@ -42,7 +50,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 2*var(--body_margin));
+    height: calc(100vh - 2*var(--body_margin));
     overflow: hidden;
 }
 .loading img{
