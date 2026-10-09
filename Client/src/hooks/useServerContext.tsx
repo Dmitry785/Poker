@@ -39,15 +39,17 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
     const hubConnectionPromiseRef = useRef<Promise<HubConnection> | null>(null);
     const connect = useCallback(async (timeout = defaultTimeout): Promise<HubConnection> =>{
         const hubURL = new URL("chat", serverUrl);
+        if(hubConnectionPromiseRef.current){
+            return await hubConnectionPromiseRef.current;
+        }
         if(hubConnectionRef.current && hubConnectionRef.current.baseUrl == hubURL.href && (
             hubConnectionRef.current.state == HubConnectionState.Connected ||
             hubConnectionRef.current.state == HubConnectionState.Connecting ||
             hubConnectionRef.current.state == HubConnectionState.Reconnecting))
         {
+            console.log("3 "+hubConnectionRef.current.state)
             return hubConnectionRef.current;
         }
-        if(hubConnectionPromiseRef.current)
-            return hubConnectionPromiseRef.current;
         hubConnectionPromiseRef.current = (async () =>{
             if(hubConnectionRef.current){
                 await hubConnectionRef.current.stop();
@@ -60,14 +62,8 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
                     send<T extends keyof HubClientMethods>(methodName: T, ...args: Parameters<HubClientMethods[T]>): Promise<void>
                 }
             setHubConnection(hubConnectionRef.current);
-            let timeoutId: number | null = null;
-            const sleep = new Promise((resolve)=>{
-                timeoutId = setTimeout(resolve, timeout);
-            });
             try{
-                await Promise.race([hubConnectionRef.current.start(), sleep]);
-                if (hubConnectionRef.current.state !== HubConnectionState.Connected)
-                    throw new Error("Время подключения вышло");
+                await hubConnectionRef.current.start();
                 return hubConnectionRef.current;
             }
             catch(err){
@@ -77,8 +73,6 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
                 throw err;
             }
             finally{
-                if(timeoutId)
-                    clearTimeout(timeoutId);
                 hubConnectionPromiseRef.current = null;
             }
         })();
