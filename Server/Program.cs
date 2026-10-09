@@ -34,7 +34,6 @@ namespace Server
                 .WithPlayerAvailable(6)
                 .WithStartMoney(1000);
             var registerService = new AuthenticationService()
-                .WithPlayerRegistrationOverrideAvailability()
                 .WithNicknameConstraint(x=>!String.IsNullOrEmpty(x), "Никнейм не должен быть пустым")
                 .WithPasswordConstraint(x => !String.IsNullOrEmpty(x), "Пароль не должен быть пустым")
                 .WithPasswordConstraint(x => x.Length <= 8, "Пароль должен быть не больше 8 символов");

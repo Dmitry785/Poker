@@ -9,7 +9,6 @@ namespace Server.Application.Services
     {
         public List<User> RegisteredUsers { get; } = new List<User>();
         public List<string>? WhiteList { get; set; }
-        public bool CanRegistrationOverride { get; set; } = false;
         public List<Constraint<string>> NicknamePolicies { get; } = new List<Constraint<string>>();
         public List<Constraint<string>> PasswordPolicies { get; } = new List<Constraint<string>>();
         public Result<Guid> Register(string nickname, string password, bool isSpectator)
@@ -20,24 +19,22 @@ namespace Server.Application.Services
                 return Result<Guid>.Fail(validateNicknameResult.ErrorMessage!);
             if(!validatePasswordResult.Success)
                 return Result<Guid>.Fail(validatePasswordResult.ErrorMessage!);
-            if (RegisteredUsers.Find(x=>x.Nickname == nickname && x.Password == password) != null)
-            {
-                if (!CanRegistrationOverride)
-                    return Result<Guid>.Fail($"Nickname {nickname} already in use");
-                RegisteredUsers.Remove(RegisteredUsers.First(x => x.Nickname == nickname));
-            }
+            if (RegisteredUsers.Find(x=>x.Nickname == nickname) != null)
+                return Result<Guid>.Fail($"Nickname {nickname} already in use");
             var user = new User(nickname, isSpectator, password);
             RegisteredUsers.Add(user);
             return Result<Guid>.Ok(user.Id);
         }
         public Result<Guid> Login(string nickname, string password)
         {
-            var user = RegisteredUsers.Find(x => x.Nickname == nickname && x.Password == password);
+            var user = RegisteredUsers.Find(x => x.Nickname == nickname);
             if(user is null)
             {
                 return Result<Guid>.Fail("User not found");
             }
-            return Result<Guid>.Ok(user.Id);
+            if(user.Password == password)
+                return Result<Guid>.Ok(user.Id);
+            return Result<Guid>.Fail("Wrong password");
         }
         public Result<User> GetUserById(Guid? id)
         {

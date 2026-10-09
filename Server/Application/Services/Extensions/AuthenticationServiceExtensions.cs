@@ -2,11 +2,6 @@
 {
     public static class AuthenticationServiceExtensions
     {
-        static public AuthenticationService WithPlayerRegistrationOverrideAvailability(this AuthenticationService service, bool availability = true)
-        {
-            service.CanRegistrationOverride = availability;
-            return service;
-        }
         static public AuthenticationService WithWhiteList(this AuthenticationService service, List<string> whiteList)
         {
             service.WhiteList = whiteList;
