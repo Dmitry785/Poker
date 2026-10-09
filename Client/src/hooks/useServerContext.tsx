@@ -47,7 +47,6 @@ export const ServerContextProvider: React.FC<{children: React.ReactNode}> = ({ch
             hubConnectionRef.current.state == HubConnectionState.Connecting ||
             hubConnectionRef.current.state == HubConnectionState.Reconnecting))
         {
-            console.log("3 "+hubConnectionRef.current.state)
             return hubConnectionRef.current;
         }
         hubConnectionPromiseRef.current = (async () =>{

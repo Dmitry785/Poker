@@ -1,5 +1,6 @@
 .container{
     position: relative;
+    padding-left: 50px;
 }
 .side_panel{
     position: fixed;
@@ -7,8 +8,10 @@
     top: 0;
     bottom: 0;
     width: 50px;
-    
+    display: flex;
+    flex-direction: column;
+    background-color: darkblue;
 }
 .side_panel:hover{
-    width: fit-content;
+    background: red ;
 }

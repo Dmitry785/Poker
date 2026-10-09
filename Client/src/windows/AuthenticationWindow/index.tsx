@@ -15,6 +15,7 @@ export default function AuthenticationWindow() {
                 hubConnection.onclose(()=>{if(lock) navigate("/connect", {replace: true})});
             })
             .catch(()=>{
+                if (!lock) return;
                 navigate("/connect", {replace: true});
             });
         
