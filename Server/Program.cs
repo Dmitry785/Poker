@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Server.Application.Services;
 using Server.Application.Services.Extensions;
 using Server.Hubs;
+using Server.Infrastructure;
 
 namespace Server
 {
@@ -29,6 +31,7 @@ namespace Server
             });
             builder.Services.AddControllers();
             builder.Services.AddSignalR();
+            builder.Services.AddDbContext<AppDbContext>(options=>options.UseNpgsql());
 
             var gameService = new GameService()
                 .WithPlayerAvailable(6)

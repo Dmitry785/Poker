@@ -14,5 +14,9 @@
             Nickname = nickname;
             Password = pass;
         }
+        public User()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 }

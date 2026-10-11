@@ -1,9 +1,12 @@
-﻿namespace Server.Domain
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Server.Domain
 {
     public class Message
     {
         public Guid Id { get; set; }
         public User UserIdentify { get; set; }
+        public Guid UserId { get; set; }
         public string Text { get; set; } = string.Empty;
         public MessageFile? File { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
@@ -12,6 +15,10 @@
             Id = Guid.NewGuid();
             UserIdentify = identify;
             Text = text;
+        }
+        public Message()
+        {
+            Id = Guid.NewGuid();
         }
         public void AttachFile(string fileUrl, MessageFileType fileType)
         {
@@ -29,6 +36,7 @@
             return "undefined";
         }
     }
+    [Owned]
     public class MessageFile
     {
         public string FileUrl { get; set; } = string.Empty;
