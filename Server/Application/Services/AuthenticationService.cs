@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Application.ResultApi;
 using Server.Domain;
+using Server.Infrastructure;
 
 namespace Server.Application.Services
 {
     public record Constraint<T>(Predicate<T> Condition, string ErrorMessage);
     public class AuthenticationService
     {
-        public List<User> RegisteredUsers { get; } = new List<User>();
+        private readonly AppDbContext _context;
+        public AuthenticationService(AppDbContext context)
+        {
+            _context = context;
+        }
         public List<string>? WhiteList { get; set; }
         public List<Constraint<string>> NicknamePolicies { get; } = new List<Constraint<string>>();
         public List<Constraint<string>> PasswordPolicies { get; } = new List<Constraint<string>>();
@@ -19,15 +24,16 @@ namespace Server.Application.Services
                 return Result<Guid>.Fail(validateNicknameResult.ErrorMessage!);
             if(!validatePasswordResult.Success)
                 return Result<Guid>.Fail(validatePasswordResult.ErrorMessage!);
-            if (RegisteredUsers.Find(x=>x.Nickname == nickname) != null)
+            if (_context.Users.FirstOrDefault(x=>x.Nickname == nickname) != null)
                 return Result<Guid>.Fail($"Nickname {nickname} already in use");
             var user = new User(nickname, isSpectator, password);
-            RegisteredUsers.Add(user);
+            _context.Users.Add(user);
+            _context.SaveChanges();
             return Result<Guid>.Ok(user.Id);
         }
         public Result<Guid> Login(string nickname, string password)
         {
-            var user = RegisteredUsers.Find(x => x.Nickname == nickname);
+            var user = _context.Users.FirstOrDefault(x => x.Nickname == nickname);
             if(user is null)
             {
                 return Result<Guid>.Fail("User not found");
@@ -40,7 +46,7 @@ namespace Server.Application.Services
         {
             if (id == null)
                 return Result<User>.Fail("Id is null");
-            var user = RegisteredUsers.Find(x => x.Id == id);
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
             if (user is not null)
             {
                 return Result<User>.Ok(user);

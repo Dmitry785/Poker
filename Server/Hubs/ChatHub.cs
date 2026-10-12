@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Server.Application.Services;
 using Server.Domain;
+using Server.Infrastructure;
 using Server.Requests;
 using Server.Responses;
 
@@ -10,10 +11,10 @@ namespace Server.Hubs
 {
     public class ChatHub : Hub
     {
-        private ChatService _chatService;
-        public ChatHub([FromServices]ChatService chatService)
+        private readonly AppDbContext _context;
+        public ChatHub(AppDbContext context)
         {
-            _chatService = chatService;
+            _context = context;
         }
         public async Task Send(SendMessageReuqest request, [FromServices]AuthenticationService regService)
         {
@@ -24,7 +25,8 @@ namespace Server.Hubs
                 return;
             }
             var message = new Message(userResult.Value!, request.text);
-            _chatService.StoreMessage(message);
+            _context.Messages.Add(message);
+            _context.SaveChanges();
             await Clients.All.SendAsync("NewMessage", ChatMessageData.ConvertFromMessage(message));
         }
         public override async Task OnConnectedAsync()

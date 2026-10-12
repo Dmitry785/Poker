@@ -5,15 +5,16 @@ namespace Server.Domain
     public class Message
     {
         public Guid Id { get; set; }
-        public User UserIdentify { get; set; }
+        public virtual User UserIdentify { get; set; } = null!;
         public Guid UserId { get; set; }
         public string Text { get; set; } = string.Empty;
-        public MessageFile? File { get; set; }
-        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public virtual MessageFile? File { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public Message(User identify, string text)
         {
             Id = Guid.NewGuid();
             UserIdentify = identify;
+            UserId = identify.Id;
             Text = text;
         }
         public Message()

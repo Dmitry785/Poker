@@ -7,7 +7,7 @@ namespace Server.Controllers
     public class AuthenticationController : Controller
     {
         [HttpGet("/register")]
-        public IActionResult Register(RegisterRequest request, [FromServices] AuthenticationService regService)
+        public IActionResult Register(RegisterRequest request, [FromServices]AuthenticationService regService)
         {
             var result = regService.Register(request.nickname, request.password, request.isSpectator);
             if (result.Success)

@@ -21,7 +21,7 @@ namespace Server
             //Services conriguration
             builder.Services.AddCors((options) =>
             {
-                options.AddPolicy("SignalRPolicy", (p) =>
+                options.AddPolicy("CorsPolicy", (p) =>
                 {
                     p.SetIsOriginAllowed(o => true)
                      .AllowCredentials()
@@ -31,25 +31,35 @@ namespace Server
             });
             builder.Services.AddControllers();
             builder.Services.AddSignalR();
-            builder.Services.AddDbContext<AppDbContext>(options=>options.UseNpgsql());
 
-            var gameService = new GameService()
+            var connectionString = builder.Configuration.GetConnectionString("NpgsqlConnectionString");
+
+            builder.Services.AddDbContext<AppDbContext>(options=>options.UseLazyLoadingProxies().UseNpgsql(connectionString));
+
+            builder.Services.AddScoped<ChatService>();
+
+            builder.Services.AddSingleton(x=> new GameService()
                 .WithPlayerAvailable(6)
-                .WithStartMoney(1000);
-            var registerService = new AuthenticationService()
-                .WithNicknameConstraint(x=>!String.IsNullOrEmpty(x), "Никнейм не должен быть пустым")
-                .WithPasswordConstraint(x => !String.IsNullOrEmpty(x), "Пароль не должен быть пустым")
-                .WithPasswordConstraint(x => x.Length <= 8, "Пароль должен быть не больше 8 символов");
+                .WithStartMoney(1000));
 
-            builder.Services.AddSingleton(registerService);
-            builder.Services.AddSingleton(gameService);
-            builder.Services.AddSingleton<ChatService>();
+            builder.Services.AddScoped(sp =>
+            {
+                var context = sp.GetRequiredService<AppDbContext>();
+                return new AuthenticationService(context)
+                    .WithNicknameConstraint(x => !String.IsNullOrEmpty(x), "Никнейм не должен быть пустым")
+                    .WithPasswordConstraint(x => !String.IsNullOrEmpty(x), "Пароль не должен быть пустым")
+                    .WithPasswordConstraint(x => x.Length <= 8, "Пароль должен быть не больше 8 символов");
+            });
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+                scope.ServiceProvider
+                    .GetRequiredService<AppDbContext>()
+                    .AddDefaultData();
 
             //Application configuration
-            app.UseCors("SignalRPolicy");
+            app.UseCors("CorsPolicy");
 
             app.UseStaticFiles(new StaticFileOptions()
             {
